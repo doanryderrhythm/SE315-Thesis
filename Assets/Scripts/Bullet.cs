@@ -13,18 +13,15 @@ public class Bullet : MonoBehaviour
     [Tooltip("Reference to the player that fired this bullet")]
     public Player owner;
 
-
     void Start()
     {
         Invoke(nameof(DestroyBullet), lifeTime);
     }
 
-
     void OnCollisionEnter2D(Collision2D collision)
     {
-        DestroyBullet();
+        
     }
-
 
     void DestroyBullet()
     {
@@ -34,5 +31,16 @@ public class Bullet : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    void Update()
+    {
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+
+        if (rb.linearVelocity.sqrMagnitude > 0.01f)
+        {
+            float angle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, angle);
+        }
     }
 }

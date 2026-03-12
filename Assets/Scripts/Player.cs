@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
@@ -46,8 +47,9 @@ public class Player : MonoBehaviour
     #region Private References
 
     private Rigidbody2D rb;
-    private float moveInput;
     private float rotateInput;
+    private PlayerControls controls;
+    private Vector2 moveInput;
 
     #endregion
 
@@ -66,8 +68,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        HandleInput();
-        HandleShooting();
+        
     }
 
 
@@ -76,37 +77,41 @@ public class Player : MonoBehaviour
         HandleMovement();
     }
 
-
-    #region Input Handling
-
-    void HandleInput()
+    void Awake()
     {
-        moveInput = 0f;
-
-        if (Input.GetKey(KeyCode.W))
-            moveInput = 1f;
-        else if (Input.GetKey(KeyCode.S))
-            moveInput = -1f;
-
-
-        rotateInput = 0f;
-
-        if (Input.GetKey(KeyCode.A))
-            rotateInput = 1f;
-        else if (Input.GetKey(KeyCode.D))
-            rotateInput = -1f;
+        controls = new PlayerControls();
     }
 
-    #endregion
+    void OnEnable()
+    {
+        controls.Enable();
+
+        controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
+
+        controls.Player.Attack.performed += ctx =>
+        {
+            if (currentAmmo > 0)
+                Shoot();
+        };
+    }
+
+    void OnDisable()
+    {
+        controls.Disable();
+    }
 
 
     #region Movement
 
     void HandleMovement()
     {
-        rb.MoveRotation(rb.rotation + rotateInput * rotateSpeed * Time.fixedDeltaTime);
+        float forward = moveInput.y;
+        float rotate = -moveInput.x;
 
-        Vector2 movement = transform.right * moveInput * moveSpeed;
+        rb.MoveRotation(rb.rotation + rotate * rotateSpeed * Time.fixedDeltaTime);
+
+        Vector2 movement = transform.right * forward * moveSpeed;
         rb.linearVelocity = movement;
     }
 
@@ -114,14 +119,6 @@ public class Player : MonoBehaviour
 
 
     #region Shooting
-
-    void HandleShooting()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && currentAmmo > 0)
-        {
-            Shoot();
-        }
-    }
 
     void Shoot()
     {
