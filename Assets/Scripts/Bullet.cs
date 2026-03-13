@@ -7,6 +7,8 @@ public class Bullet : MonoBehaviour
     [SerializeField, Tooltip("Time before the bullet is destroyed")]
     private float lifeTime = 3f;
 
+    [Header("Effects")]
+    [SerializeField] private GameObject explosionEffect;
 
     [Header("Owner")]
 
@@ -20,7 +22,21 @@ public class Bullet : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Explode(collision.transform.position);
+
+            Destroy(collision.gameObject);
+            DestroyBullet();
+        }
+    }
+
+    void Explode(Vector3 pos)
+    {
+        if (explosionEffect != null)
+        {
+            Instantiate(explosionEffect, pos, Quaternion.identity);
+        }
     }
 
     void DestroyBullet()

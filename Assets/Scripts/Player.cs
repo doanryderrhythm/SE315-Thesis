@@ -3,9 +3,9 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    #region Movement Settings
+    #region Player Settings
 
-    [Header("Movement Settings")]
+    [Header("Player Settings")]
 
     [SerializeField, Tooltip("Speed of the tank movement")]
     private float moveSpeed = 5f;
