@@ -22,17 +22,10 @@ public class Bullet : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Wall"))
-        {
-            Rigidbody2D rb = GetComponent<Rigidbody2D>();
-            Vector2 incoming = rb.linearVelocity;
-            Vector2 normal = collision.contacts[0].normal;
-            Vector2 reflect = Vector2.Reflect(incoming, normal);
-            rb.linearVelocity = reflect.normalized * incoming.magnitude;
-        }
-        else if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             Explode(collision.transform.position);
+
             Destroy(collision.gameObject);
             DestroyBullet();
         }

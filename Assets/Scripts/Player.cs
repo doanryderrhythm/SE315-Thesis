@@ -48,7 +48,6 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D rb;
     private float rotateInput;
-    private PlayerControls controls;
     private Vector2 moveInput;
 
     #endregion
@@ -58,49 +57,29 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
 
-        // Random starting direction
         float randomAngle = Random.Range(0f, 360f);
         transform.rotation = Quaternion.Euler(0, 0, randomAngle);
 
         currentAmmo = maxAmmo;
     }
 
-
-    void Update()
-    {
-        
-    }
-
-
     void FixedUpdate()
     {
         HandleMovement();
     }
 
-    void Awake()
+    public void OnMove(InputAction.CallbackContext context)
     {
-        controls = new PlayerControls();
+        moveInput = context.ReadValue<Vector2>();
     }
 
-    void OnEnable()
+    public void OnAttack(InputAction.CallbackContext context)
     {
-        controls.Enable();
-
-        controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
-
-        controls.Player.Attack.performed += ctx =>
+        if (context.performed && currentAmmo > 0)
         {
-            if (currentAmmo > 0)
-                Shoot();
-        };
+            Shoot();
+        }
     }
-
-    void OnDisable()
-    {
-        controls.Disable();
-    }
-
 
     #region Movement
 
