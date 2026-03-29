@@ -123,7 +123,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""852140f2-7766-474d-8707-702459ba45f3"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Hold"",
                     ""initialStateCheck"": false
@@ -265,7 +265,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Arrow"",
-                    ""id"": ""518f7c33-48ad-44f7-b773-99b55d1c0086"",
+                    ""id"": ""d6c52981-da68-4906-a7a2-e66ea38c14a6"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -276,7 +276,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""up"",
-                    ""id"": ""5822449d-2a7d-44fd-954c-03145dd30e08"",
+                    ""id"": ""ab44eeb9-6f83-46c2-a716-435ba516a3e5"",
                     ""path"": ""<Keyboard>/upArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -287,7 +287,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""down"",
-                    ""id"": ""a375318c-a97e-49ba-98f7-150d181414af"",
+                    ""id"": ""a113ec36-169a-4b5c-916b-2c95fb0420ef"",
                     ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -298,7 +298,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""left"",
-                    ""id"": ""b20ee6e0-bfbc-4c03-b999-20c13d99769f"",
+                    ""id"": ""92607735-6181-4ea8-ac3d-477953185c21"",
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -309,7 +309,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""right"",
-                    ""id"": ""b1b18c29-ceaf-4862-9f60-8342a46b71ff"",
+                    ""id"": ""2f80387c-34f8-4878-9543-a98ac3b30ba9"",
                     ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -1161,6 +1161,22 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""isOR"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Keyboard&Mouse1"",
+            ""bindingGroup"": ""Keyboard&Mouse1"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<Mouse>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
         }
     ]
 }");
@@ -1706,6 +1722,19 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         {
             if (m_XRSchemeIndex == -1) m_XRSchemeIndex = asset.FindControlSchemeIndex("XR");
             return asset.controlSchemes[m_XRSchemeIndex];
+        }
+    }
+    private int m_KeyboardMouse1SchemeIndex = -1;
+    /// <summary>
+    /// Provides access to the input control scheme.
+    /// </summary>
+    /// <seealso cref="UnityEngine.InputSystem.InputControlScheme" />
+    public InputControlScheme KeyboardMouse1Scheme
+    {
+        get
+        {
+            if (m_KeyboardMouse1SchemeIndex == -1) m_KeyboardMouse1SchemeIndex = asset.FindControlSchemeIndex("Keyboard&Mouse1");
+            return asset.controlSchemes[m_KeyboardMouse1SchemeIndex];
         }
     }
     /// <summary>
