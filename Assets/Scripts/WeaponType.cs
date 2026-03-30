@@ -4,5 +4,6 @@ public enum WeaponType
 {
     Normal,
     Gatling,
-    Laser
+    Laser,
+    Shield
 }

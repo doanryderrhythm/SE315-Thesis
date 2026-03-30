@@ -10,7 +10,15 @@ public class Collectible : MonoBehaviour
 
         if (player != null)
         {
-            player.SetWeapon(weaponType);
+            if (weaponType == WeaponType.Shield)
+            {
+                player.ActivateShield();
+            }
+            else
+            {
+                player.SetWeapon(weaponType);
+            }
+
             Destroy(gameObject);
         }
     }
