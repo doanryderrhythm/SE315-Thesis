@@ -46,6 +46,15 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    #region Shield Settings
+
+    [SerializeField] private GameObject shieldObject;
+    [SerializeField] private float shieldDuration = 15f;
+
+    private Coroutine shieldCoroutine;
+
+    #endregion
+
 
     #region Private References
 
@@ -218,6 +227,25 @@ public class Player : MonoBehaviour
     public void SetWeapon(WeaponType newWeapon)
     {
         currentWeapon = newWeapon;
+    }
+
+    public void ActivateShield()
+    {
+        if (shieldCoroutine != null)
+        {
+            StopCoroutine(shieldCoroutine);
+        }
+
+        shieldCoroutine = StartCoroutine(ShieldRoutine());
+    }
+
+    IEnumerator ShieldRoutine()
+    {
+        shieldObject.SetActive(true);
+
+        yield return new WaitForSeconds(shieldDuration);
+
+        shieldObject.SetActive(false);
     }
 
     #endregion

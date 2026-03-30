@@ -63,6 +63,12 @@ public class Bullet : MonoBehaviour
             Destroy(collision.gameObject);
             DestroyBullet();
         }
+
+        if (collision.gameObject.CompareTag("Shield"))
+        {
+            DestroyBullet();
+            return;
+        }
     }
 
     void Explode(Vector3 pos)
