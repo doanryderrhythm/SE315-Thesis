@@ -1,12 +1,18 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 
 public class SettingMenu : MonoBehaviour
 {
     public TMPro.TMP_Dropdown resolutionDropdown;
     Resolution[] resolutions;
+
+    [SerializeField] Slider masterSlider;
+    [SerializeField] Slider SFXSlider;
+    [SerializeField] Slider BGMSlider;
+
     private void Start()
     {
         resolutions = Screen.resolutions;
@@ -32,6 +38,14 @@ public class SettingMenu : MonoBehaviour
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
+
+        masterSlider.value = PlayerPrefs.GetFloat("Master", 1f);
+        SFXSlider.value = PlayerPrefs.GetFloat("SFX", 1f);
+        BGMSlider.value = PlayerPrefs.GetFloat("BGM", 1f);
+
+        masterSlider.onValueChanged.AddListener(v => AudioManager.Instance.SetVolume("Master", v));
+        SFXSlider.onValueChanged.AddListener(v => AudioManager.Instance.SetVolume("SFX", v));
+        BGMSlider.onValueChanged.AddListener(v => AudioManager.Instance.SetVolume("BGM", v));
     }
     public void SetResolution(int resolutionIndex)
     {
@@ -41,10 +55,6 @@ public class SettingMenu : MonoBehaviour
     }
     public void SetFullScreen(bool isFullScreen )
     {
-        Screen.fullScreen = isFullScreen;
-    }
-    public void SetVolume(float volume)
-    {
-        Debug.Log(volume);
+        Screen.fullScreenMode = isFullScreen? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
     }
 }
