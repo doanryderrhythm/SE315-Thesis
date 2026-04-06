@@ -14,22 +14,38 @@ public class UI_ButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private static bool flip = false;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         original_scale = transform.localScale;
         original_rotation = transform.localRotation;
-        target_scale = transform.localScale;
-        target_rotation = transform.localRotation;
+    }
+
+    void OnEnable()
+    {
+        ResetButton();
+    }
+
+    void OnDisable()
+    {
+        ResetButton();
+    }
+
+    private void ResetButton()
+    {
+        transform.localScale = original_scale;
+        transform.localRotation = original_rotation;
+
+        target_scale = original_scale;
+        target_rotation = original_rotation;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         target_scale = original_scale * scale_rate;
 
-        rotation_rate = flip ? rotation_rate : -rotation_rate;
+        float current_rotation = flip ? rotation_rate : -rotation_rate;
         flip = !flip;
-        target_rotation = original_rotation * Quaternion.Euler(0, 0, rotation_rate);
+        target_rotation = original_rotation * Quaternion.Euler(0, 0, current_rotation);
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -41,7 +57,7 @@ public class UI_ButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     // Update is called once per frame
     void Update()
     {
-        transform.localScale = Vector3.Lerp(transform.localScale, target_scale, Time.deltaTime * speed);
-        transform.localRotation = Quaternion.Lerp(transform.localRotation, target_rotation, Time.deltaTime * speed);
+        transform.localScale = Vector3.Lerp(transform.localScale, target_scale, Time.unscaledDeltaTime * speed);
+        transform.localRotation = Quaternion.Lerp(transform.localRotation, target_rotation, Time.unscaledDeltaTime * speed);
     }
 }
