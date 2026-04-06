@@ -223,12 +223,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 974a1118ac7dd8a438dda6b725ac3d84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  moveSpeed: 5
+  moveSpeed: 7.5
   rotateSpeed: 270
   bulletPrefab: {fileID: 3788025276769663731, guid: f6ebbe6752bd0476386d05d1aee3a9c1, type: 3}
   firePoint: {fileID: 873724304419738522}
   bulletSpeed: 10
+  gatlingBulletSpeed: 10
   maxAmmo: 6
+  shieldObject: {fileID: 0}
+  shieldDuration: 15
 --- !u!50 &4637239405441563506
 Rigidbody2D:
   serializedVersion: 5
@@ -314,7 +317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
-  m_Actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_Actions: {fileID: -944628639613478452, guid: 649de5c20d0ad244091971f316b7b4bc, type: 3}
   m_NotificationBehavior: 2
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
