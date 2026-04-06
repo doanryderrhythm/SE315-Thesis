@@ -15,19 +15,59 @@ public class Bullet : MonoBehaviour
     [Tooltip("Reference to the player that fired this bullet")]
     public Player owner;
 
+    public bool useLifeTime = true;
+    public bool canBounce = false;
+
+    public int maxBounce = 1;
+    private int bounceCount = 0;
+    private Rigidbody2D rb;
+
     void Start()
     {
-        Invoke(nameof(DestroyBullet), lifeTime);
+        rb = GetComponent<Rigidbody2D>();
+
+        if (useLifeTime)
+        {
+            Invoke(nameof(DestroyBullet), lifeTime);
+        }
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            if (!canBounce)
+            {
+                DestroyBullet();
+                return;
+            }
+
+            bounceCount++;
+
+            if (bounceCount > maxBounce)
+            {
+                DestroyBullet();
+                return;
+            }
+
+            Vector2 normal = collision.contacts[0].normal;
+            Vector2 reflect = Vector2.Reflect(rb.linearVelocity, normal);
+
+            rb.linearVelocity = reflect.normalized * rb.linearVelocity.magnitude;
+        }
+
         if (collision.gameObject.CompareTag("Player"))
         {
             Explode(collision.transform.position);
 
             Destroy(collision.gameObject);
             DestroyBullet();
+        }
+
+        if (collision.gameObject.CompareTag("Shield"))
+        {
+            DestroyBullet();
+            return;
         }
     }
 
@@ -36,6 +76,7 @@ public class Bullet : MonoBehaviour
         if (explosionEffect != null)
         {
             Instantiate(explosionEffect, pos, Quaternion.identity);
+            Destroy(gameObject, 1f);
         }
     }
 
@@ -51,8 +92,6 @@ public class Bullet : MonoBehaviour
 
     void Update()
     {
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-
         if (rb.linearVelocity.sqrMagnitude > 0.01f)
         {
             float angle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
