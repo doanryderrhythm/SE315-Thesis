@@ -16951,6 +16951,17 @@ PrefabInstance:
       addedObject: {fileID: 1028470635}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 528f60aec4f2747ed9a8c7694b313e24, type: 3}
+--- !u!114 &1236166100 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5706681580552384059, guid: 528f60aec4f2747ed9a8c7694b313e24, type: 3}
+  m_PrefabInstance: {fileID: 1236166099}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
 --- !u!1 &1251618014
 GameObject:
   m_ObjectHideFlags: 0
@@ -64593,6 +64604,7 @@ MonoBehaviour:
   settingsMenuUI: {fileID: 6026402427431090908}
   pauseMenuAnimator: {fileID: 9086708047444736012}
   settingsMenuAnimator: {fileID: 7804410975240624992}
+  playerInput: {fileID: 1236166100}
 --- !u!225 &8269415376128707048
 CanvasGroup:
   m_ObjectHideFlags: 0
