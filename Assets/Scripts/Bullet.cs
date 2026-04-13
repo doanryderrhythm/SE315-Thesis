@@ -73,10 +73,9 @@ public class Bullet : MonoBehaviour
             if (d != null)
             {
                 d.Die();
+                DestroyBullet();
+                return;
             }
-
-            DestroyBullet();
-            return;
         }
 
         if (collision.gameObject.CompareTag("Shield"))

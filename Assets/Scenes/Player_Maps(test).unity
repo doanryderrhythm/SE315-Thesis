@@ -15652,11 +15652,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1000833922525642785, guid: 045562ecba039ee4d9263f851983c0d0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 16.34
+      value: 16.1
       objectReference: {fileID: 0}
     - target: {fileID: 1000833922525642785, guid: 045562ecba039ee4d9263f851983c0d0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 8.42
+      value: 7.17
       objectReference: {fileID: 0}
     - target: {fileID: 1000833922525642785, guid: 045562ecba039ee4d9263f851983c0d0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -15693,6 +15693,14 @@ PrefabInstance:
     - target: {fileID: 1000833922525642786, guid: 045562ecba039ee4d9263f851983c0d0, type: 3}
       propertyPath: m_Name
       value: Dummy
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000833922525642787, guid: 045562ecba039ee4d9263f851983c0d0, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4637239405441563506, guid: 045562ecba039ee4d9263f851983c0d0, type: 3}
+      propertyPath: m_BodyType
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -37202,10 +37210,7 @@ Tilemap:
   - serializedVersion: 2
     m_RefCount: 69
     m_Data: {fileID: 1491619956}
-  m_TileSpriteArray:
-  - serializedVersion: 2
-    m_RefCount: 0
-    m_Data: {fileID: 1872614728}
+  m_TileSpriteArray: []
   m_TileMatrixArray:
   - serializedVersion: 2
     m_RefCount: 69
