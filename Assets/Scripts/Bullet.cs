@@ -63,6 +63,7 @@ public class Bullet : MonoBehaviour
             }
 
             DestroyBullet();
+            return;
         }
 
         if (collision.gameObject.CompareTag("Dummy"))
@@ -75,6 +76,7 @@ public class Bullet : MonoBehaviour
             }
 
             DestroyBullet();
+            return;
         }
 
         if (collision.gameObject.CompareTag("Shield"))
