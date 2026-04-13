@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class Dummy : MonoBehaviour
@@ -15,6 +15,8 @@ public class Dummy : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Collider2D col;
 
+    private bool isDead = false;
+
     void Start()
     {
         spawnPosition = transform.position;
@@ -26,6 +28,10 @@ public class Dummy : MonoBehaviour
 
     public void Die()
     {
+        if (isDead) return;
+
+        isDead = true;
+
         if (explosionEffect != null)
         {
             Instantiate(explosionEffect, transform.position, Quaternion.identity);
@@ -46,5 +52,7 @@ public class Dummy : MonoBehaviour
 
         spriteRenderer.enabled = true;
         col.enabled = true;
+
+        isDead = false;
     }
 }
