@@ -294,5 +294,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8f7a282a2a9c2241978b68ce7a80e80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dummy
-  respawnDelay: 3
+  respawnDelay: 5
   explosionEffect: {fileID: 708970565015777803, guid: 4da477b0d5aa60849802c98cfc5a60fd, type: 3}

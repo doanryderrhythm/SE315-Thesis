@@ -12,8 +12,9 @@ public class Dummy : MonoBehaviour
     private Vector3 spawnPosition;
     private Quaternion spawnRotation;
 
-    private SpriteRenderer spriteRenderer;
-    private Collider2D col;
+    private Renderer[] renderers;
+    private Collider2D[] colliders;
+    private Rigidbody2D rb;
 
     private bool isDead = false;
 
@@ -22,8 +23,9 @@ public class Dummy : MonoBehaviour
         spawnPosition = transform.position;
         spawnRotation = transform.rotation;
 
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        col = GetComponent<Collider2D>();
+        renderers = GetComponentsInChildren<Renderer>();
+        colliders = GetComponentsInChildren<Collider2D>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     public void Die()
@@ -37,8 +39,14 @@ public class Dummy : MonoBehaviour
             Instantiate(explosionEffect, transform.position, Quaternion.identity);
         }
 
-        spriteRenderer.enabled = false;
-        col.enabled = false;
+        foreach (var r in renderers)
+            r.enabled = false;
+
+        foreach (var c in colliders)
+            c.enabled = false;
+
+        if (rb != null)
+            rb.simulated = false;
 
         StartCoroutine(RespawnRoutine());
     }
@@ -50,8 +58,17 @@ public class Dummy : MonoBehaviour
         transform.position = spawnPosition;
         transform.rotation = spawnRotation;
 
-        spriteRenderer.enabled = true;
-        col.enabled = true;
+        foreach (var r in renderers)
+            r.enabled = true;
+
+        foreach (var c in colliders)
+            c.enabled = true;
+
+        if (rb != null)
+        {
+            rb.simulated = true;
+            rb.linearVelocity = Vector2.zero;
+        }
 
         isDead = false;
     }
