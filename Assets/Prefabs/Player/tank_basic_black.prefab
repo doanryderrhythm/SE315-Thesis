@@ -234,6 +234,7 @@ MonoBehaviour:
   shieldObject: {fileID: 8626793479943177656}
   shieldDuration: 15
   minePrefab: {fileID: 4206375443370986579, guid: 633a17b2fe191b24097c9d7f20d8d940, type: 3}
+  explosionEffect: {fileID: 708970565015777803, guid: 4da477b0d5aa60849802c98cfc5a60fd, type: 3}
 --- !u!50 &4637239405441563506
 Rigidbody2D:
   serializedVersion: 5

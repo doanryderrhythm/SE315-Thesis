@@ -7,6 +7,7 @@ TagManager:
   - Bullet
   - Wall
   - Shield
+  - Mine
   layers:
   - Default
   - TransparentFX
@@ -50,6 +51,9 @@ TagManager:
   - name: Foreground
     uniqueID: 1345791475
     locked: 0
+  - name: Mine
+    uniqueID: 367167907
+    locked: 0
   - name: Player
     uniqueID: 1254576719
     locked: 0
@@ -58,3 +62,4 @@ TagManager:
     locked: 0
   m_RenderingLayers:
   - Default
+  m_MigratedRenderPipelines: []
