@@ -57,6 +57,13 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    #region Effects Setting
+
+    [Header("Effects")]
+    [SerializeField] private GameObject explosionEffect;
+
+    #endregion
+
 
     #region Private References
 
@@ -126,6 +133,16 @@ public class Player : MonoBehaviour
 
         Vector2 movement = transform.right * forward * moveSpeed;
         rb.linearVelocity = movement;
+    }
+
+    #endregion
+
+    #region Effects
+    public void Die()
+    {
+        Instantiate(explosionEffect, transform.position, Quaternion.identity);
+
+        Destroy(gameObject);
     }
 
     #endregion

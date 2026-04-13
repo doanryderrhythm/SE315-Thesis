@@ -7,9 +7,6 @@ public class Bullet : MonoBehaviour
     [SerializeField, Tooltip("Time before the bullet is destroyed")]
     private float lifeTime = 3f;
 
-    [Header("Effects")]
-    [SerializeField] private GameObject explosionEffect;
-
     [Header("Owner")]
 
     [Tooltip("Reference to the player that fired this bullet")]
@@ -58,9 +55,13 @@ public class Bullet : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Player"))
         {
-            Explode(collision.transform.position);
+            Player p = collision.gameObject.GetComponent<Player>();
 
-            Destroy(collision.gameObject);
+            if (p != null)
+            {
+                p.Die();
+            }
+
             DestroyBullet();
         }
 
@@ -68,15 +69,6 @@ public class Bullet : MonoBehaviour
         {
             DestroyBullet();
             return;
-        }
-    }
-
-    void Explode(Vector3 pos)
-    {
-        if (explosionEffect != null)
-        {
-            Instantiate(explosionEffect, pos, Quaternion.identity);
-            Destroy(gameObject, 1f);
         }
     }
 

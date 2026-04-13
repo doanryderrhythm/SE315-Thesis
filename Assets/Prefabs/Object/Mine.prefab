@@ -79,7 +79,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -1026294305
+  m_SortingLayerID: 367167907
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_MaskInteraction: 0
@@ -152,4 +152,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   armDelay: 1
-  explosionEffect: {fileID: 708970565015777803, guid: f10a5f4db3aad495ba9bd80ac2c17d12, type: 3}
+  visibleTimeAfterArm: 3
+  explosionEffect: {fileID: 1075123213333092435, guid: 5f790af90bfd89f4097564e77a1b94bc, type: 3}
+  explosionRadius: 2
+  spriteRenderer: {fileID: 5923844265852180920}
+  fadeDuration: 0.5
