@@ -8,6 +8,7 @@ TagManager:
   - Wall
   - Shield
   - Mine
+  - Dummy
   layers:
   - Default
   - TransparentFX

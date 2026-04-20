@@ -74,6 +74,19 @@ public class Bullet : MonoBehaviour
             }
 
             DestroyBullet();
+            return;
+        }
+
+        if (collision.gameObject.CompareTag("Dummy"))
+        {
+            Dummy d = collision.gameObject.GetComponent<Dummy>();
+
+            if (d != null)
+            {
+                d.Die();
+                DestroyBullet();
+                return;
+            }
         }
 
         if (collision.gameObject.CompareTag("Shield"))
