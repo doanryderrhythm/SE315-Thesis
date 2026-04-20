@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class TankColorController : MonoBehaviour
 {
@@ -8,44 +9,128 @@ public class TankColorController : MonoBehaviour
     public SpriteRenderer turretRenderer;
 
     [Header("UI Sliders")]
-    public Slider rSlider;
-    public Slider gSlider;
-    public Slider bSlider;
+    public float currentHue, currentSat, currentVal;
 
-    [Header("UI Preview (Optional)")]
-    public Image colorPreviewBox;
+    [SerializeField] private RawImage hueImage, satValImage, outputImage;
+    [SerializeField] private Slider hueSlider;
+    [SerializeField] private TMP_InputField hexInputField;
 
-    void Start()
+    private Texture2D hueTexture, svTexture, outputTexture;
+
+    private void Start()
     {
-        // Set sliders to default (1 is white/full color)
-        rSlider.value = 1f;
-        gSlider.value = 1f;
-        bSlider.value = 1f;
+        CreateHueImage();
 
-        // Add "Listeners" so the color updates the moment you slide
-        rSlider.onValueChanged.AddListener(delegate { OnSliderChanged(); });
-        gSlider.onValueChanged.AddListener(delegate { OnSliderChanged(); });
-        bSlider.onValueChanged.AddListener(delegate { OnSliderChanged(); });
+        CreateSVImage();
 
-        // Initial color call
-        OnSliderChanged();
+        CreateOutputImage();
+
+        UpdateOutputImage();
     }
 
-    public void OnSliderChanged()
+    private void CreateHueImage()
     {
-        // Create the new color from slider values (R, G, B)
-        Color pickedColor = new Color(rSlider.value, gSlider.value, bSlider.value);
+        hueTexture = new Texture2D(1, 16);
+        hueTexture.wrapMode = TextureWrapMode.Clamp;
+        hueTexture.name = "HueTexture";
 
-        // Apply it to the Tank Base
+        for (int i = 0; i <hueTexture.height; i++)
+        {
+            hueTexture.SetPixel(0, i, Color.HSVToRGB((float)i / hueTexture.height, 1, 0.05f));
+        }
+
+        hueTexture.Apply();
+        currentHue = 0;
+        hueImage.texture = hueTexture;
+    }
+
+    private void CreateSVImage()
+    {
+        svTexture = new Texture2D(16, 16);
+        svTexture.wrapMode = TextureWrapMode.Clamp;
+        svTexture.name = "SatValTexture";
+
+        for (int y = 0; y < svTexture.height; y++)
+        {
+            for (int x = 0; x < svTexture.width; x++)
+            {
+                svTexture.SetPixel(x, y,Color.HSVToRGB(
+                    currentHue,
+                    (float)x / svTexture.width,
+                    (float)y / svTexture.height));
+            }
+        }
+
+        svTexture.Apply();
+        currentSat = 0;
+        currentVal = 0;
+
+        satValImage.texture = svTexture;
+    }
+
+    private void CreateOutputImage()
+    {
+        outputTexture = new Texture2D(1, 16);
+        outputTexture.wrapMode = TextureWrapMode.Clamp;
+        outputTexture.name = "OutputTexture";
+
+        Color currentColor = Color.HSVToRGB(currentHue, currentSat, currentVal);
+
+        for (int i = 0; i <outputTexture.height; i++)
+        {
+            outputTexture.SetPixel(0, i, currentColor);
+        }
+
+        outputTexture.Apply();
+
+        outputImage.texture = outputTexture;
+    }
+
+    private void UpdateOutputImage()
+    {
+        Color currentColor = Color.HSVToRGB(currentHue, currentSat, currentVal);
+        
+        for (int i = 0; i < outputTexture.height; i++)
+        {
+            outputTexture.SetPixel(0, i, currentColor);
+        }
+        outputTexture.Apply();
+
         if (baseRenderer != null)
-            baseRenderer.color = pickedColor;
+        {
+            baseRenderer.color = currentColor;
+        }
 
-        // Apply it to the Turret
         if (turretRenderer != null)
-            turretRenderer.color = pickedColor;
+        {
+            turretRenderer.color = currentColor;
+        }
+    }
+    public void SetSV(float S, float V)
+    {
+        currentSat = S;
+        currentVal = V;
 
-        // Update the UI preview box if you have one
-        if (colorPreviewBox != null)
-            colorPreviewBox.color = pickedColor;
+        UpdateOutputImage();
+    }
+
+    public void UpdateSVImage()
+    {
+        currentHue = hueSlider.value;
+        
+        for(int y = 0; y <svTexture.height; y++)
+        {
+            for(int x = 0; x < svTexture.width; x++)
+            {
+                svTexture.SetPixel(x, y, Color.HSVToRGB(
+                    currentHue,
+                    (float)x / svTexture.width,
+                    (float)y / svTexture.height));
+            }
+        }
+
+        svTexture.Apply();
+
+        UpdateOutputImage();
     }
 }

@@ -33,12 +33,14 @@ public class AudioManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            StartCoroutine(InitializeVolume());
+            LoadVolume();
         }
         else
         {
             Destroy(gameObject);
         }
-        LoadVolume();
     }
 
     public void SetVolume(string key, float volume)
@@ -57,6 +59,12 @@ public class AudioManager : MonoBehaviour
         SetVolume("Master", masterVolume);
         SetVolume("SFX", sfxVolume);
         SetVolume("BGM", bgmVolume);
+    }
+
+    private System.Collections.IEnumerator InitializeVolume()
+    {
+        yield return null;
+        LoadVolume();
     }
 
     public void AssignButtonSound()

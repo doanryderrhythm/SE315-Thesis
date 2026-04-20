@@ -40,6 +40,7 @@ public class ResultScreenController : MonoBehaviour
     {
         SceneManager.LoadScene(0);
     }
+
     private IEnumerator ResultSequenceRoutine()
     {
         SetUIState(true);
@@ -47,12 +48,14 @@ public class ResultScreenController : MonoBehaviour
         finishIntroUI.SetActive(true);
         finishIntroAnimator.SetTrigger("Play");
 
-        yield return new WaitForSecondsRealtime(1f);
+        float length = finishIntroAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.length;
+        yield return new WaitForSecondsRealtime(length);
         finishIntroUI.SetActive(false);
 
         resultPanelUI.SetActive(true);
         resultPanelAnimator.SetTrigger("Play");
     }
+
     private void SetUIState(bool active)
     {
         GameIsPaused = active;
