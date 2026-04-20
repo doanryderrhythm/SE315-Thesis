@@ -237,6 +237,12 @@ public class Player : MonoBehaviour
         Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
         rbBullet.linearVelocity = firePoint.right * bulletSpeed;
 
+        TrailRenderer trail = bullet.GetComponent<TrailRenderer>();
+        if (trail != null)
+        {
+            trail.enabled = false;
+        }
+
         Bullet b = bullet.GetComponent<Bullet>();
         if (b != null)
         {
