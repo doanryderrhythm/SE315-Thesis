@@ -105,9 +105,16 @@ public class Mine : MonoBehaviour
     {
         if (!isArmed) return;
 
-        if (other.CompareTag("Player"))
+        if (other.TryGetComponent<Player>(out var p))
         {
             Explode();
+            return;
+        }
+
+        if (other.TryGetComponent<Dummy>(out var d))
+        {
+            Explode();
+            return;
         }
     }
 
@@ -122,13 +129,14 @@ public class Mine : MonoBehaviour
 
         foreach (var hit in hits)
         {
-            if (hit.CompareTag("Player"))
+            if (hit.TryGetComponent<Player>(out var p))
             {
-                Player p = hit.GetComponent<Player>();
-                if (p != null)
-                {
-                    p.Die();
-                }
+                p.Die();
+            }
+
+            if (hit.TryGetComponent<Dummy>(out var d))
+            {
+                d.Die();
             }
         }
 
