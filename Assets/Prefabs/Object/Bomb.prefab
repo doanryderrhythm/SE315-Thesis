@@ -136,8 +136,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   lifeTime: 5
   isBomb: 1
-  bombBulletCount: 6
-  childLifeMultiplier: 0.5
+  bombBulletCount: 10
+  childLifeMultiplier: 1
   normalBulletPrefab: {fileID: 3788025276769663731, guid: f6ebbe6752bd0476386d05d1aee3a9c1, type: 3}
   owner: {fileID: 0}
   useLifeTime: 1
