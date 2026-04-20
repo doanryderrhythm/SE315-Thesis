@@ -119,6 +119,12 @@ public class Bullet : MonoBehaviour
 
             GameObject bullet = Instantiate(normalBulletPrefab, transform.position, Quaternion.identity);
 
+            TrailRenderer trail = bullet.GetComponent<TrailRenderer>();
+            if (trail != null)
+            {
+                trail.enabled = false;
+            }
+
             Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
             rbBullet.linearVelocity = dir.normalized * rb.linearVelocity.magnitude;
 
