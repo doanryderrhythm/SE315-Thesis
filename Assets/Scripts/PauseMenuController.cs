@@ -1,24 +1,24 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class PauseMenu : MonoBehaviour
 {
     public static bool GameIsPaused = false;
-    public GameObject pauseMenuUI;
+    [SerializeField] private PlayerInput playerInput;
+    [SerializeField] private CanvasGroup canvasGroup;
 
-    private CanvasGroup canvasGroup;
-
+    [SerializeField] private GameObject pauseMenuUI;
     [SerializeField] private GameObject settingsMenuUI;
+
     [SerializeField] private Animator pauseMenuAnimator;
     [SerializeField] private Animator settingsMenuAnimator;
 
     private void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();
-        canvasGroup.alpha = 0f;
-        canvasGroup.interactable = false;
-        canvasGroup.blocksRaycasts = false;
+        SetUIState(false);
     }
     private void Update()
     {
@@ -37,62 +37,48 @@ public class PauseMenu : MonoBehaviour
     
     private void Pause()
     {
-        StartCoroutine(FadeFromTo(0f, 1f));
-        canvasGroup.interactable = true;
-        canvasGroup.blocksRaycasts = true;
-
+        SetUIState(true);
         pauseMenuAnimator.SetTrigger("Open");
 
         settingsMenuUI.SetActive(false);
         pauseMenuUI.SetActive(true);
-
-        Time.timeScale = 0f;
-        GameIsPaused = true;
     }
-    public void Resume()
-    {
-        StartCoroutine(FadeFromTo(1f, 0f));
-        StartCoroutine(CloseMenuRoutine());
+    public void Resume() => StartCoroutine(CloseMenuRoutine());
 
-        canvasGroup.interactable = false;
-        canvasGroup.blocksRaycasts = false;
-    }
+    public void Settings() => SwitchMenu(settingsMenuUI, pauseMenuUI, settingsMenuAnimator, "Open");
 
-    private IEnumerator CloseMenuRoutine()
-    {
-        pauseMenuAnimator.SetTrigger("Close");
-        settingsMenuAnimator.SetTrigger("Close");
-
-        yield return new WaitForSecondsRealtime(0.25f);
-
-        settingsMenuUI.SetActive(false);
-        pauseMenuUI.SetActive(true);
-
-        Time.timeScale = 1f;
-        GameIsPaused = false;
-    }
-
-    public void Settings()
-    {
-        pauseMenuUI.SetActive(false);
-        pauseMenuAnimator.SetTrigger("Close");
-
-        settingsMenuUI.SetActive(true);
-        settingsMenuAnimator.SetTrigger("Open");
-    }
-
-    public void Back()
-    {
-        settingsMenuUI.SetActive(false);
-        settingsMenuAnimator.SetTrigger("Close");
-
-        pauseMenuUI.SetActive(true);
-        pauseMenuAnimator.SetTrigger("Open");
-    }
+    public void Back() => SwitchMenu(pauseMenuUI, settingsMenuUI, settingsMenuAnimator, "Close");
 
     public void ReturnToTitle()
     {
         SceneManager.LoadScene(0);
+    }
+
+    private void SwitchMenu(GameObject toShow, GameObject toHide, Animator anim, string trigger)
+    {
+        toShow.SetActive(true);
+        toHide.SetActive(false);
+        anim.SetTrigger(trigger);
+    }
+    private void SetUIState(bool active)
+    {
+        GameIsPaused = active;
+        Time.timeScale = active ? 0f : 1f;
+        playerInput.SwitchCurrentActionMap(active ? "UI" : "Player");
+
+        canvasGroup.interactable = active;
+        canvasGroup.blocksRaycasts = active;
+
+        StopAllCoroutines();
+        StartCoroutine(FadeFromTo(canvasGroup.alpha, active ? 1f : 0f));
+    }
+    private IEnumerator CloseMenuRoutine()
+    {
+        pauseMenuAnimator.SetTrigger("Close");
+        settingsMenuAnimator.SetTrigger("Close");
+        SetUIState(false);
+
+        yield return new WaitForSecondsRealtime(0.25f);
     }
 
     private IEnumerator FadeFromTo(float from, float to)
