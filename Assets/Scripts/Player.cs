@@ -46,12 +46,25 @@ public class Player : MonoBehaviour
 
     #endregion
 
-    #region Shield Settings
+    #region Weapon Settings
+
+    [SerializeField] private GameObject normalBulletPrefab;
 
     [SerializeField] private GameObject shieldObject;
     [SerializeField] private float shieldDuration = 15f;
 
     private Coroutine shieldCoroutine;
+
+    [SerializeField] private GameObject minePrefab;
+    
+    [SerializeField] private GameObject bombBulletPrefab;
+
+    #endregion
+
+    #region Effects Setting
+
+    [Header("Effects")]
+    [SerializeField] private GameObject explosionEffect;
 
     #endregion
 
@@ -128,6 +141,16 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    #region Effects
+    public void Die()
+    {
+        Instantiate(explosionEffect, transform.position, Quaternion.identity);
+
+        Destroy(gameObject);
+    }
+
+    #endregion
+
 
     #region Shooting
 
@@ -145,6 +168,16 @@ public class Player : MonoBehaviour
 
             case WeaponType.Laser:
                 ShootLaser();
+                currentWeapon = WeaponType.Normal;
+                break;
+
+            case WeaponType.Mine:
+                PlaceMine();
+                currentWeapon = WeaponType.Normal;
+                break;
+
+            case WeaponType.Bomb:
+                ShootBomb();
                 currentWeapon = WeaponType.Normal;
                 break;
         }
@@ -178,6 +211,12 @@ public class Player : MonoBehaviour
     {
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
 
+        TrailRenderer trail = bullet.GetComponent<TrailRenderer>();
+        if (trail != null)
+        {
+            trail.enabled = true;
+        }
+
         Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
         rbBullet.linearVelocity = firePoint.right * bulletSpeed * 5f;
 
@@ -191,9 +230,38 @@ public class Player : MonoBehaviour
         }
     }
 
+    void ShootBomb()
+    {
+        GameObject bullet = Instantiate(bombBulletPrefab, firePoint.position, firePoint.rotation);
+
+        Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
+        rbBullet.linearVelocity = firePoint.right * bulletSpeed;
+
+        TrailRenderer trail = bullet.GetComponent<TrailRenderer>();
+        if (trail != null)
+        {
+            trail.enabled = false;
+        }
+
+        Bullet b = bullet.GetComponent<Bullet>();
+        if (b != null)
+        {
+            b.owner = this;
+            b.isBomb = true;
+
+            b.SetNormalBulletPrefab(normalBulletPrefab);
+        }
+    }
+
     void SpawnBullet(Vector2 direction, float scale = 1f, float speedOverride = -1f)
     {
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        GameObject bullet = Instantiate(normalBulletPrefab, firePoint.position, Quaternion.identity);
+
+        TrailRenderer trail = bullet.GetComponent<TrailRenderer>();
+        if (trail != null)
+        {
+            trail.enabled = false;
+        }
 
         bullet.transform.localScale *= scale;
 
@@ -203,10 +271,51 @@ public class Player : MonoBehaviour
 
         rbBullet.linearVelocity = direction.normalized * speed;
 
+        Collider2D bulletCol = bullet.GetComponent<Collider2D>();
+        Collider2D playerCol = GetComponent<Collider2D>();
+
+        if (bulletCol != null && playerCol != null)
+        {
+            StartCoroutine(EnableCollisionAfterDelay(bulletCol, playerCol, 0.1f));
+        }
+
+        if (shieldObject != null && shieldObject.activeSelf)
+        {
+            Collider2D shieldCol = shieldObject.GetComponent<Collider2D>();
+
+            if (bulletCol != null && shieldCol != null)
+            {
+                StartCoroutine(EnableCollisionAfterDelay(bulletCol, playerCol, 0.1f));
+            }
+        }
+
         Bullet b = bullet.GetComponent<Bullet>();
         if (b != null)
         {
             b.owner = this;
+        }
+    }
+
+    IEnumerator EnableCollisionAfterDelay(Collider2D bullet, Collider2D player, float delay)
+    {
+        Physics2D.IgnoreCollision(bullet, player, true);
+
+        yield return new WaitForSeconds(delay);
+
+        if (bullet != null && player != null)
+        {
+            Physics2D.IgnoreCollision(bullet, player, false);
+        }
+    }
+
+    void PlaceMine()
+    {
+        GameObject mine = Instantiate(minePrefab, transform.position, Quaternion.identity);
+
+        Mine m = mine.GetComponent<Mine>();
+        if (m != null)
+        {
+            m.SetOwner(this);
         }
     }
 

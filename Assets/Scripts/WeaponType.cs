@@ -5,5 +5,7 @@ public enum WeaponType
     Normal,
     Gatling,
     Laser,
-    Shield
+    Shield,
+    Mine,
+    Bomb
 }

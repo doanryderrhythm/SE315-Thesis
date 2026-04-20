@@ -7,8 +7,11 @@ public class Bullet : MonoBehaviour
     [SerializeField, Tooltip("Time before the bullet is destroyed")]
     private float lifeTime = 3f;
 
-    [Header("Effects")]
-    [SerializeField] private GameObject explosionEffect;
+    [Header("Bomb Settings")]
+    public bool isBomb = false;
+    [SerializeField] private int bombBulletCount = 6;
+    [SerializeField] private float childLifeMultiplier = 0.5f;
+    [SerializeField] private GameObject normalBulletPrefab;
 
     [Header("Owner")]
 
@@ -21,6 +24,11 @@ public class Bullet : MonoBehaviour
     public int maxBounce = 1;
     private int bounceCount = 0;
     private Rigidbody2D rb;
+
+    public void SetNormalBulletPrefab(GameObject prefab)
+    {
+        normalBulletPrefab = prefab;
+    }
 
     void Start()
     {
@@ -58,10 +66,27 @@ public class Bullet : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Player"))
         {
-            Explode(collision.transform.position);
+            Player p = collision.gameObject.GetComponent<Player>();
 
-            Destroy(collision.gameObject);
+            if (p != null)
+            {
+                p.Die();
+            }
+
             DestroyBullet();
+            return;
+        }
+
+        if (collision.gameObject.CompareTag("Dummy"))
+        {
+            Dummy d = collision.gameObject.GetComponent<Dummy>();
+
+            if (d != null)
+            {
+                d.Die();
+                DestroyBullet();
+                return;
+            }
         }
 
         if (collision.gameObject.CompareTag("Shield"))
@@ -71,17 +96,13 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    void Explode(Vector3 pos)
-    {
-        if (explosionEffect != null)
-        {
-            Instantiate(explosionEffect, pos, Quaternion.identity);
-            Destroy(gameObject, 1f);
-        }
-    }
-
     void DestroyBullet()
     {
+        if (isBomb)
+        {
+            ExplodeBomb();
+        }
+
         if (owner != null)
         {
             owner.ReturnAmmo();
@@ -97,5 +118,46 @@ public class Bullet : MonoBehaviour
             float angle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
+    }
+
+    void ExplodeBomb()
+    {
+        float angleStep = 360f / bombBulletCount;
+
+        for (int i = 0; i < bombBulletCount; i++)
+        {
+            float angle = i * angleStep;
+
+            Vector2 dir = Quaternion.Euler(0, 0, angle) * Vector2.right;
+
+            GameObject bullet = Instantiate(normalBulletPrefab, transform.position, Quaternion.identity);
+
+            TrailRenderer trail = bullet.GetComponent<TrailRenderer>();
+            if (trail != null)
+            {
+                trail.enabled = false;
+            }
+
+            Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
+            rbBullet.linearVelocity = dir.normalized * rb.linearVelocity.magnitude;
+
+            Bullet b = bullet.GetComponent<Bullet>();
+
+            if (b != null)
+            {
+                b.owner = owner;
+                b.useLifeTime = true;
+
+                b.SetLifeTimeMultiplier(childLifeMultiplier);
+            }
+        }
+    }
+
+    public void SetLifeTimeMultiplier(float multiplier)
+    {
+        CancelInvoke();
+
+        float newLife = lifeTime * multiplier;
+        Invoke(nameof(DestroyBullet), newLife);
     }
 }
