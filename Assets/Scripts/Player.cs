@@ -48,12 +48,16 @@ public class Player : MonoBehaviour
 
     #region Weapon Settings
 
+    [SerializeField] private GameObject normalBulletPrefab;
+
     [SerializeField] private GameObject shieldObject;
     [SerializeField] private float shieldDuration = 15f;
 
     private Coroutine shieldCoroutine;
 
     [SerializeField] private GameObject minePrefab;
+    
+    [SerializeField] private GameObject bombBulletPrefab;
 
     #endregion
 
@@ -171,6 +175,11 @@ public class Player : MonoBehaviour
                 PlaceMine();
                 currentWeapon = WeaponType.Normal;
                 break;
+
+            case WeaponType.Bomb:
+                ShootBomb();
+                currentWeapon = WeaponType.Normal;
+                break;
         }
     }
 
@@ -221,9 +230,26 @@ public class Player : MonoBehaviour
         }
     }
 
+    void ShootBomb()
+    {
+        GameObject bullet = Instantiate(bombBulletPrefab, firePoint.position, firePoint.rotation);
+
+        Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
+        rbBullet.linearVelocity = firePoint.right * bulletSpeed;
+
+        Bullet b = bullet.GetComponent<Bullet>();
+        if (b != null)
+        {
+            b.owner = this;
+            b.isBomb = true;
+
+            b.SetNormalBulletPrefab(normalBulletPrefab);
+        }
+    }
+
     void SpawnBullet(Vector2 direction, float scale = 1f, float speedOverride = -1f)
     {
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        GameObject bullet = Instantiate(normalBulletPrefab, firePoint.position, Quaternion.identity);
 
         TrailRenderer trail = bullet.GetComponent<TrailRenderer>();
         if (trail != null)

@@ -23,11 +23,9 @@ public class Collectible : MonoBehaviour
                 break;
 
             case WeaponType.Mine:
-                player.SetWeapon(WeaponType.Mine);
-                break;
-
             case WeaponType.Gatling:
             case WeaponType.Laser:
+            case WeaponType.Bomb:   
             case WeaponType.Normal:
                 player.SetWeapon(weaponType);
                 break;

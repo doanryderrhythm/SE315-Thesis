@@ -14,6 +14,9 @@ public class Mine : MonoBehaviour
     [Header("Visual")]
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private float fadeDuration = 0.5f;
+    [SerializeField] private GameObject rangeIndicator;
+
+    private SpriteRenderer[] allRenderers;
 
     private bool isArmed = false;
     private Player owner;
@@ -25,6 +28,11 @@ public class Mine : MonoBehaviour
 
     void Start()
     {
+        allRenderers = GetComponentsInChildren<SpriteRenderer>();
+
+        if (rangeIndicator != null)
+            rangeIndicator.SetActive(true);
+
         StartCoroutine(MineLifecycle());
     }
 
@@ -35,25 +43,62 @@ public class Mine : MonoBehaviour
 
         yield return new WaitForSeconds(visibleTimeAfterArm);
 
+        StartCoroutine(FadeRange());
+
         yield return StartCoroutine(FadeOut());
     }
 
     IEnumerator FadeOut()
     {
         float time = 0f;
-        Color startColor = spriteRenderer.color;
+
+        Color[] startColors = new Color[allRenderers.Length];
+        for (int i = 0; i < allRenderers.Length; i++)
+        {
+            startColors[i] = allRenderers[i].color;
+        }
 
         while (time < fadeDuration)
         {
             time += Time.deltaTime;
             float alpha = Mathf.Lerp(1f, 0f, time / fadeDuration);
 
-            spriteRenderer.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+            for (int i = 0; i < allRenderers.Length; i++)
+            {
+                var c = startColors[i];
+                allRenderers[i].color = new Color(c.r, c.g, c.b, alpha);
+            }
 
             yield return null;
         }
 
-        spriteRenderer.color = new Color(startColor.r, startColor.g, startColor.b, 0f);
+        foreach (var r in allRenderers)
+        {
+            var c = r.color;
+            r.color = new Color(c.r, c.g, c.b, 0f);
+        }
+    }
+
+    IEnumerator FadeRange()
+    {
+        if (rangeIndicator == null) yield break;
+
+        SpriteRenderer sr = rangeIndicator.GetComponent<SpriteRenderer>();
+        if (sr == null) yield break;
+
+        Color startColor = sr.color;
+        float t = 0f;
+
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            float alpha = Mathf.Lerp(startColor.a, 0f, t / fadeDuration);
+
+            sr.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+            yield return null;
+        }
+
+        rangeIndicator.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -68,6 +113,10 @@ public class Mine : MonoBehaviour
 
     void Explode()
     {
+        if (explosionEffect != null)
+        {
+            Instantiate(explosionEffect, transform.position, Quaternion.identity);
+        }
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
 
@@ -76,9 +125,6 @@ public class Mine : MonoBehaviour
             if (hit.CompareTag("Player"))
             {
                 Player p = hit.GetComponent<Player>();
-
-                Instantiate(explosionEffect, transform.position, Quaternion.identity);
-
                 if (p != null)
                 {
                     p.Die();
