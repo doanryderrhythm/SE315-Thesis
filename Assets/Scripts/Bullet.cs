@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -5,13 +6,18 @@ public class Bullet : MonoBehaviour
     [Header("Bullet Settings")]
 
     [SerializeField, Tooltip("Time before the bullet is destroyed")]
-    private float lifeTime = 3f;
+    private float lifeTime = 5f;
 
     [Header("Bomb Settings")]
     public bool isBomb = false;
     [SerializeField] private int bombBulletCount = 6;
     [SerializeField] private float childLifeMultiplier = 0.5f;
+    [SerializeField] private float splitBulletSpeed = 7.5f;
     [SerializeField] private GameObject normalBulletPrefab;
+    [SerializeField] private AudioSource tickAudio;
+
+    private SpriteRenderer spriteRenderer;
+    private bool hasExploded = false;
 
     [Header("Owner")]
 
@@ -33,6 +39,7 @@ public class Bullet : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (useLifeTime)
         {
@@ -130,7 +137,9 @@ public class Bullet : MonoBehaviour
 
             Vector2 dir = Quaternion.Euler(0, 0, angle) * Vector2.right;
 
-            GameObject bullet = Instantiate(normalBulletPrefab, transform.position, Quaternion.identity);
+            Vector3 spawnPos = transform.position + (Vector3)(dir * 0.6f);
+
+            GameObject bullet = Instantiate(normalBulletPrefab, spawnPos, Quaternion.identity);
 
             TrailRenderer trail = bullet.GetComponent<TrailRenderer>();
             if (trail != null)
@@ -139,7 +148,7 @@ public class Bullet : MonoBehaviour
             }
 
             Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
-            rbBullet.linearVelocity = dir.normalized * rb.linearVelocity.magnitude;
+            rbBullet.linearVelocity = dir.normalized * splitBulletSpeed;
 
             Bullet b = bullet.GetComponent<Bullet>();
 
@@ -159,5 +168,54 @@ public class Bullet : MonoBehaviour
 
         float newLife = lifeTime * multiplier;
         Invoke(nameof(DestroyBullet), newLife);
+    }
+
+    IEnumerator BombCountdown(float remainingTime)
+    {
+        if (remainingTime > 3f)
+        {
+            yield return new WaitForSeconds(remainingTime - 3f);
+            remainingTime = 3f;
+        }
+
+        while (remainingTime > 0f)
+        {
+            float blinkInterval = Mathf.Lerp(
+                0.25f,
+                0.05f,
+                1f - (remainingTime / 3f)
+            );
+
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.enabled = !spriteRenderer.enabled;
+            }
+
+            if (tickAudio != null)
+            {
+                tickAudio.PlayOneShot(tickAudio.clip);
+            }
+
+            yield return new WaitForSeconds(blinkInterval);
+
+            remainingTime -= blinkInterval;
+        }
+
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.enabled = true;
+        }
+
+        DestroyBullet();
+    }
+
+    public void StartBombTimer(float remainingTime)
+    {
+        StartCoroutine(BombCountdown(remainingTime));
+    }
+
+    public void ForceExplode()
+    {
+        DestroyBullet();
     }
 }

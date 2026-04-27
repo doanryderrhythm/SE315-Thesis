@@ -30,6 +30,9 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("Speed of the bullet")]
     private float bulletSpeed = 10f;
 
+    [SerializeField, Tooltip("Bomb lifetime")]
+    private float bombLifeTime = 5f;
+
     [SerializeField] private float gatlingBulletSpeed = 10f;
 
     #endregion
@@ -43,6 +46,9 @@ public class Player : MonoBehaviour
     private int maxAmmo = 6;
 
     private int currentAmmo;
+
+    private float bombHoldStartTime;
+    private bool isCookingBomb = false;
 
     #endregion
 
@@ -104,24 +110,50 @@ public class Player : MonoBehaviour
     {
         if (context.started)
         {
+            if (currentWeapon == WeaponType.Bomb)
+            {
+                isCookingBomb = true;
+                bombHoldStartTime = Time.time;
+                return;
+            }
+
             if (currentWeapon == WeaponType.Gatling)
             {
                 isFiring = true;
                 StartCoroutine(GatlingFire());
+                return;
             }
-            else
-            {
-                Shoot();
-            }
+
+            Shoot();
+            return;
         }
 
         if (context.canceled)
         {
-            isFiring = false;
+            if (currentWeapon == WeaponType.Bomb && isCookingBomb)
+            {
+                isCookingBomb = false;
+
+                float heldTime = Time.time - bombHoldStartTime;
+
+                if (heldTime >= 5f)
+                {
+                    Die();
+                    currentWeapon = WeaponType.Normal;
+                    return;
+                }
+
+                ShootBomb(heldTime);
+
+                currentWeapon = WeaponType.Normal;
+                return;
+            }
 
             if (currentWeapon == WeaponType.Gatling)
             {
+                isFiring = false;
                 currentWeapon = WeaponType.Normal;
+                return;
             }
         }
     }
@@ -177,8 +209,6 @@ public class Player : MonoBehaviour
                 break;
 
             case WeaponType.Bomb:
-                ShootBomb();
-                currentWeapon = WeaponType.Normal;
                 break;
         }
     }
@@ -230,12 +260,44 @@ public class Player : MonoBehaviour
         }
     }
 
-    void ShootBomb()
+    void ShootBomb(float cookedTime)
     {
-        GameObject bullet = Instantiate(bombBulletPrefab, firePoint.position, firePoint.rotation);
+        float remainingTime = Mathf.Max(0f, bombLifeTime - cookedTime);
+
+        if (remainingTime <= 0f)
+        {
+            GameObject tempBomb = Instantiate(
+                bombBulletPrefab,
+                transform.position,
+                Quaternion.identity
+            );
+
+            Bullet b = tempBomb.GetComponent<Bullet>();
+            if (b != null)
+            {
+                b.owner = this;
+                b.isBomb = true;
+                b.SetNormalBulletPrefab(normalBulletPrefab);
+
+                b.ForceExplode();
+            }
+
+            Die();
+            currentWeapon = WeaponType.Normal;
+            return;
+        }
+
+        GameObject bullet = Instantiate(
+            bombBulletPrefab,
+            firePoint.position,
+            firePoint.rotation
+        );
 
         Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
-        rbBullet.linearVelocity = firePoint.right * bulletSpeed;
+        if (rbBullet != null)
+        {
+            rbBullet.linearVelocity = firePoint.right * bulletSpeed;
+        }
 
         TrailRenderer trail = bullet.GetComponent<TrailRenderer>();
         if (trail != null)
@@ -243,13 +305,14 @@ public class Player : MonoBehaviour
             trail.enabled = false;
         }
 
-        Bullet b = bullet.GetComponent<Bullet>();
-        if (b != null)
+        Bullet bomb = bullet.GetComponent<Bullet>();
+        if (bomb != null)
         {
-            b.owner = this;
-            b.isBomb = true;
+            bomb.owner = this;
+            bomb.isBomb = true;
+            bomb.SetNormalBulletPrefab(normalBulletPrefab);
 
-            b.SetNormalBulletPrefab(normalBulletPrefab);
+            bomb.StartBombTimer(remainingTime);
         }
     }
 
