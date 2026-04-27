@@ -12,6 +12,8 @@ public class MapSelectionUIManager : MonoBehaviour
 
     public void OnStartClicked()
     {
+        Debug.Log("Start clicked!");
+
         int selectedIndex = mapTypeDropdown.value;
 
         bool isRandom = selectedIndex == mapTypeDropdown.options.Count - 1;
