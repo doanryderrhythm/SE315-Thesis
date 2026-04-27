@@ -5,10 +5,10 @@ public class SelectionScreen : MonoBehaviour
 {
     public void Back()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("Main Menu");
     }
     public void MapSelect()
     {
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene("Result Screen");
     }
 }
