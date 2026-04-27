@@ -13,7 +13,7 @@ public class SVImageControl : MonoBehaviour, IDragHandler, IPointerClickHandler
     private void Awake()
     {
         svImage = GetComponent<RawImage>();
-        CC = FindObjectOfType<TankColorController>();
+        CC = FindAnyObjectByType<TankColorController>();
         rectTransform = GetComponent<RectTransform>();
 
         pickerTransform = pickerImage.GetComponent<RectTransform>();
