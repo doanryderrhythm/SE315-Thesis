@@ -72,19 +72,10 @@ public class AudioManager : MonoBehaviour
         Button[] buttons = Resources.FindObjectsOfTypeAll<Button>();
         foreach (Button button in buttons)
         {
-            EventTrigger eventTrigger = button.gameObject.GetComponent<EventTrigger>();
-            if (eventTrigger == null)
+            if (button.gameObject.GetComponent<HoverSound>() == null)
             {
-                eventTrigger = button.gameObject.AddComponent<EventTrigger>();
+                button.gameObject.AddComponent<HoverSound>();
             }
-
-            eventTrigger.triggers.RemoveAll(t => t.eventID == EventTriggerType.PointerEnter);
-
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            entry.eventID = EventTriggerType.PointerEnter;
-            entry.callback.AddListener((data) => { PlayHoverSound(); });
-
-            eventTrigger.triggers.Add(entry);
         }
     }
     public void PlayHoverSound()
@@ -94,5 +85,13 @@ public class AudioManager : MonoBehaviour
             sfxSource.pitch = Random.Range(0.95f, 1.05f);
             sfxSource.PlayOneShot(hoverSound);
         }
+    }
+}
+
+public class HoverSound : MonoBehaviour, IPointerEnterHandler
+{
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        AudioManager.Instance.PlayHoverSound();
     }
 }
