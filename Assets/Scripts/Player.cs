@@ -35,6 +35,14 @@ public class Player : MonoBehaviour
 
     [SerializeField] private float gatlingBulletSpeed = 10f;
 
+    private Coroutine cookingBombRoutine;
+    private float currentCookTime = 0f;
+
+    [Header("Bomb Audio")]
+    [SerializeField] private AudioSource cookTickAudio;
+
+    private float nextCookTickTime = 0f;
+
     #endregion
 
 
@@ -113,7 +121,13 @@ public class Player : MonoBehaviour
             if (currentWeapon == WeaponType.Bomb)
             {
                 isCookingBomb = true;
-                bombHoldStartTime = Time.time;
+                currentCookTime = 0f;
+                nextCookTickTime = 0f;
+
+                if (cookingBombRoutine != null)
+                    StopCoroutine(cookingBombRoutine);
+
+                cookingBombRoutine = StartCoroutine(CookBombRoutine());
                 return;
             }
 
@@ -134,16 +148,10 @@ public class Player : MonoBehaviour
             {
                 isCookingBomb = false;
 
-                float heldTime = Time.time - bombHoldStartTime;
+                if (cookingBombRoutine != null)
+                    StopCoroutine(cookingBombRoutine);
 
-                if (heldTime >= 5f)
-                {
-                    Die();
-                    currentWeapon = WeaponType.Normal;
-                    return;
-                }
-
-                ShootBomb(heldTime);
+                ShootBomb(currentCookTime);
 
                 currentWeapon = WeaponType.Normal;
                 return;
@@ -263,29 +271,6 @@ public class Player : MonoBehaviour
     void ShootBomb(float cookedTime)
     {
         float remainingTime = Mathf.Max(0f, bombLifeTime - cookedTime);
-
-        if (remainingTime <= 0f)
-        {
-            GameObject tempBomb = Instantiate(
-                bombBulletPrefab,
-                transform.position,
-                Quaternion.identity
-            );
-
-            Bullet b = tempBomb.GetComponent<Bullet>();
-            if (b != null)
-            {
-                b.owner = this;
-                b.isBomb = true;
-                b.SetNormalBulletPrefab(normalBulletPrefab);
-
-                b.ForceExplode();
-            }
-
-            Die();
-            currentWeapon = WeaponType.Normal;
-            return;
-        }
 
         GameObject bullet = Instantiate(
             bombBulletPrefab,
@@ -421,4 +406,61 @@ public class Player : MonoBehaviour
     }
 
     #endregion
+
+    IEnumerator CookBombRoutine()
+    {
+        currentCookTime = 0f;
+
+        while (isCookingBomb)
+        {
+            currentCookTime += Time.deltaTime;
+
+            float remainingTime = bombLifeTime - currentCookTime;
+
+            if (remainingTime <= 0f)
+            {
+                GameObject tempBomb = Instantiate(
+                    bombBulletPrefab,
+                    transform.position,
+                    Quaternion.identity
+                );
+
+                Bullet b = tempBomb.GetComponent<Bullet>();
+                if (b != null)
+                {
+                    b.owner = this;
+                    b.isBomb = true;
+                    b.SetNormalBulletPrefab(normalBulletPrefab);
+
+                    b.ForceExplode();
+                }
+
+                Die();
+                currentWeapon = WeaponType.Normal;
+                isCookingBomb = false;
+                yield break;
+            }
+
+            if (remainingTime <= 3f)
+            {
+                float tickInterval = Mathf.Lerp(
+                    0.35f,   
+                    0.06f,   
+                    1f - (remainingTime / 3f)
+                );
+
+                if (Time.time >= nextCookTickTime)
+                {
+                    if (cookTickAudio != null)
+                    {
+                        cookTickAudio.PlayOneShot(cookTickAudio.clip);
+                    }
+
+                    nextCookTickTime = Time.time + tickInterval;
+                }
+            }
+
+            yield return null;
+        }
+    }
 }

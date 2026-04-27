@@ -18,6 +18,7 @@ public class Bullet : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private bool hasExploded = false;
+    private bool canHit = false;
 
     [Header("Owner")]
 
@@ -40,6 +41,7 @@ public class Bullet : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        StartCoroutine(EnableHit());
 
         if (useLifeTime)
         {
@@ -47,8 +49,16 @@ public class Bullet : MonoBehaviour
         }
     }
 
+    IEnumerator EnableHit()
+    {
+        yield return new WaitForSeconds(0.1f);
+        canHit = true;
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!canHit) return;
+
         if (collision.gameObject.CompareTag("Wall"))
         {
             if (!canBounce)
@@ -105,6 +115,9 @@ public class Bullet : MonoBehaviour
 
     void DestroyBullet()
     {
+        if (hasExploded) return;
+        hasExploded = true;
+
         if (isBomb)
         {
             ExplodeBomb();
