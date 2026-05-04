@@ -10,7 +10,9 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] AudioMixer audioMixer;
     [SerializeField] AudioSource sfxSource;
+
     [SerializeField] AudioClip hoverSound;
+    [SerializeField] AudioClip clickSound;
 
     private void OnEnable()
     {
@@ -69,12 +71,16 @@ public class AudioManager : MonoBehaviour
 
     public void AssignButtonSound()
     {
-        Button[] buttons = Resources.FindObjectsOfTypeAll<Button>();
+        Button[] buttons = GameObject.FindObjectsByType<Button>();
         foreach (Button button in buttons)
         {
             if (button.gameObject.GetComponent<HoverSound>() == null)
             {
                 button.gameObject.AddComponent<HoverSound>();
+            }
+            if (button.gameObject.GetComponent<ClickSound>() == null)
+            {
+                button.gameObject.AddComponent<ClickSound>();
             }
         }
     }
@@ -86,6 +92,14 @@ public class AudioManager : MonoBehaviour
             sfxSource.PlayOneShot(hoverSound);
         }
     }
+    public void PlayClickSound()
+    {
+        if (clickSound != null && sfxSource != null)
+        {
+            sfxSource.pitch = Random.Range(0.95f, 1.05f);
+            sfxSource.PlayOneShot(clickSound);
+        }
+    }
 }
 
 public class HoverSound : MonoBehaviour, IPointerEnterHandler
@@ -93,5 +107,13 @@ public class HoverSound : MonoBehaviour, IPointerEnterHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         AudioManager.Instance.PlayHoverSound();
+    }
+}
+
+public class ClickSound : MonoBehaviour, IPointerClickHandler
+{
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        AudioManager.Instance.PlayClickSound();
     }
 }
