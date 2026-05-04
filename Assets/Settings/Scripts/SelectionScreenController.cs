@@ -9,6 +9,6 @@ public class SelectionScreen : MonoBehaviour
     }
     public void MapSelect()
     {
-        SceneManager.LoadScene("Polishing Test");
+        SceneManager.LoadScene("Polish");
     }
 }
