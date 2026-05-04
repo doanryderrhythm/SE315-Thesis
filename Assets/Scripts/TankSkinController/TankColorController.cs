@@ -8,12 +8,15 @@ public class TankColorController : MonoBehaviour
     public SpriteRenderer baseRenderer;
     public SpriteRenderer turretRenderer;
 
-    [Header("UI Sliders")]
-    public float currentHue, currentSat, currentVal;
+    [Header("HSV Configuration")]
+    public float currentHue;
+    public float currentSat;
+    public float currentVal;
 
     [SerializeField] private RawImage hueImage, satValImage, outputImage;
     [SerializeField] private Slider hueSlider;
     [SerializeField] private TMP_InputField hexInputField;
+    [SerializeField] private SVImageControl svControl;
 
     private Texture2D hueTexture, svTexture, outputTexture;
 
@@ -36,11 +39,11 @@ public class TankColorController : MonoBehaviour
 
         for (int i = 0; i <hueTexture.height; i++)
         {
-            hueTexture.SetPixel(0, i, Color.HSVToRGB((float)i / hueTexture.height, 1, 0.05f));
+            hueTexture.SetPixel(0, i, Color.HSVToRGB((float)i / hueTexture.height, 1, 1f));
         }
 
         hueTexture.Apply();
-        currentHue = 0;
+        currentHue = 1f;
         hueImage.texture = hueTexture;
     }
 
@@ -62,8 +65,8 @@ public class TankColorController : MonoBehaviour
         }
 
         svTexture.Apply();
-        currentSat = 0;
-        currentVal = 0;
+        currentSat = 0f;
+        currentVal = 1f;
 
         satValImage.texture = svTexture;
     }
@@ -88,13 +91,21 @@ public class TankColorController : MonoBehaviour
 
     private void UpdateOutputImage()
     {
-        Color currentColor = Color.HSVToRGB(currentHue, currentSat, currentVal);
-        
+        float preferredVal = Mathf.Max(currentVal, 0.25f);
+        Color currentColor = Color.HSVToRGB(currentHue, currentSat, preferredVal);
+
         for (int i = 0; i < outputTexture.height; i++)
         {
             outputTexture.SetPixel(0, i, currentColor);
         }
+
         outputTexture.Apply();
+        string hexString = ColorUtility.ToHtmlStringRGB(currentColor);
+        hexInputField.text = "#" + hexString;
+
+        PlayerPrefs.SetFloat("ColorR", currentColor.r);
+        PlayerPrefs.SetFloat("ColorG", currentColor.g);
+        PlayerPrefs.SetFloat("ColorB", currentColor.b);
 
         if (baseRenderer != null)
         {
@@ -106,6 +117,7 @@ public class TankColorController : MonoBehaviour
             turretRenderer.color = currentColor;
         }
     }
+
     public void SetSV(float S, float V)
     {
         currentSat = S;
@@ -116,14 +128,14 @@ public class TankColorController : MonoBehaviour
 
     public void UpdateSVImage()
     {
-        currentHue = hueSlider.value;
+        float hue = currentHue;
         
         for(int y = 0; y <svTexture.height; y++)
         {
             for(int x = 0; x < svTexture.width; x++)
             {
                 svTexture.SetPixel(x, y, Color.HSVToRGB(
-                    currentHue,
+                    hue,
                     (float)x / svTexture.width,
                     (float)y / svTexture.height));
             }
@@ -131,6 +143,41 @@ public class TankColorController : MonoBehaviour
 
         svTexture.Apply();
 
+        if(svControl != null)
+        {
+            svControl.UpdatePickerColor();
+        }
+
         UpdateOutputImage();
+    }
+    public void OnHueChanged(float hue)
+    {
+        currentHue = hue;
+        UpdateSVImage();
+    }
+
+    public void OnTextInput()
+    {
+        string hex = hexInputField.text;
+        if (hex.Length < 6) return;
+
+        if (!hex.StartsWith("#"))
+        {
+            hex = "#" + hex;
+        }
+
+        Color color;
+
+        if (ColorUtility.TryParseHtmlString(hex, out color))
+        {
+            Color.RGBToHSV(color, out currentHue, out currentSat, out currentVal);
+
+            hueSlider.SetValueWithoutNotify(currentHue);
+
+            if (svControl != null)
+                svControl.SetPickerFromHex();
+
+            UpdateSVImage();
+        }
     }
 }
