@@ -392,7 +392,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -85.00097}
+  m_AnchoredPosition: {x: 0, y: 85.00095}
   m_SizeDelta: {x: -100.00001, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4175962522809864046
@@ -1230,10 +1230,10 @@ RectTransform:
   - {fileID: 1383199380198505177}
   m_Father: {fileID: 3542401852004054172}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 500, y: 0}
-  m_SizeDelta: {x: 800, y: 500}
+  m_AnchorMin: {x: 0.05, y: 0.25}
+  m_AnchorMax: {x: 0.45, y: 0.75}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3001392108493822944
 CanvasRenderer:
@@ -1443,9 +1443,9 @@ RectTransform:
   m_Father: {fileID: 5092753524853871546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 250, y: 0}
-  m_SizeDelta: {x: 500, y: 100}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 50, y: 0}
+  m_SizeDelta: {x: -100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3995378846882386254
 CanvasRenderer:
@@ -1509,7 +1509,7 @@ MonoBehaviour:
   m_fontSizeMin: 50
   m_fontSizeMax: 80
   m_fontStyle: 1
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 15
@@ -2191,10 +2191,10 @@ RectTransform:
   - {fileID: 7170333817105633647}
   m_Father: {fileID: 5092753524853871546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -20}
-  m_SizeDelta: {x: 800, y: 430}
+  m_SizeDelta: {x: 0, y: 430}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9042313775272544837
 CanvasRenderer:
@@ -2474,10 +2474,10 @@ RectTransform:
   - {fileID: 2862259403620760082}
   m_Father: {fileID: 909728992602341986}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 600, y: 400}
+  m_SizeDelta: {x: -160, y: -100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3266517731634245683
 MonoBehaviour:
@@ -2674,10 +2674,10 @@ RectTransform:
   - {fileID: 2650565439841988980}
   m_Father: {fileID: 3542401852004054172}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -500, y: 0}
-  m_SizeDelta: {x: 700, y: 500}
+  m_AnchorMin: {x: 0.55, y: 0.25}
+  m_AnchorMax: {x: 0.95, y: 0.75}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1105151437017763885
 CanvasRenderer:
@@ -2707,7 +2707,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a5a4ab37756188a43ad8898b7967c732, type: 3}
+  m_Sprite: {fileID: 183985149, guid: a5a4ab37756188a43ad8898b7967c732, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2968,7 +2968,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6676307477344419506}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -3721,9 +3721,9 @@ RectTransform:
   m_Father: {fileID: 909728992602341986}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: 0}
-  m_SizeDelta: {x: 500, y: 100}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 50, y: 0}
+  m_SizeDelta: {x: -100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5310854220730578338
 CanvasRenderer:
@@ -3789,7 +3789,7 @@ MonoBehaviour:
   m_fontSizeMin: 50
   m_fontSizeMax: 80
   m_fontStyle: 1
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 15
@@ -3947,8 +3947,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1533111246484587401}
   m_HandleRect: {fileID: 823036819938113304}
   m_Direction: 2
-  m_Value: 1.0000057
-  m_Size: 0.7166666
+  m_Value: -0.000005385455
+  m_Size: 0.71666664
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
