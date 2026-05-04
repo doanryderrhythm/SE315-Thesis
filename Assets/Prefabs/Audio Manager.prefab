@@ -243,3 +243,4 @@ MonoBehaviour:
   audioMixer: {fileID: 24100000, guid: 3a1cfb28f879b3f40995fe967b8252b6, type: 2}
   sfxSource: {fileID: 9050218182571985548}
   hoverSound: {fileID: 8300000, guid: a55f28e3634d99b40b5486918c0ab189, type: 3}
+  clickSound: {fileID: 8300000, guid: a25a2ee49f38bf3458a54bba225f24b9, type: 3}
