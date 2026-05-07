@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60b7a6f1b01a5a244983fca920b30127, type: 3}
   m_Name: ice_04
   m_EditorClassIdentifier: Assembly-CSharp::MapData
-  mapName: 
-  mapType: 1
+  mapName: Ice 4
+  previewImage: {fileID: 0}
   mapPrefab: {fileID: 5167382520380837161, guid: d0ef9c6e5a415c64aa1625d4862105bf, type: 3}
+  type: 0

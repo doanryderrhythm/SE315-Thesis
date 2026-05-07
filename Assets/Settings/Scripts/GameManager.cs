@@ -1,66 +1,112 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Current Match")]
     private int currentMapIndex = 0;
     private GameObject currentMap;
 
+    private List<MapData> selectedMaps;
+
     void Start()
     {
-        // Check if maps were selected
-        if (GameSettings.selectedMaps == null || GameSettings.selectedMaps.Count == 0)
+        // Lấy danh sách map từ GameSettings (host đã set trước)
+        selectedMaps = GameSettings.selectedMaps;
+
+        if (selectedMaps == null || selectedMaps.Count == 0)
         {
             Debug.LogError("No maps selected!");
             return;
         }
 
-        LoadNextMap();
+        currentMapIndex = 0;
+
+        LoadCurrentMap();
     }
 
     void Update()
     {
-        // Restart game (your existing feature)
+        // Restart game (debug)
         if (Input.GetKeyDown(KeyCode.R))
         {
-            RestartGame();
+            RestartMatch();
         }
 
-        // TEMP: press N to go to next map (for testing)
+        // TEMP: next map (debug)
         if (Input.GetKeyDown(KeyCode.N))
         {
-            LoadNextMap();
+            EndCurrentRound();
         }
     }
 
-    void RestartGame()
+    // ========================
+    // LOAD MAP
+    // ========================
+    void LoadCurrentMap()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        if (currentMapIndex >= selectedMaps.Count)
+        {
+            OnMatchFinished();
+            return;
+        }
+
+        MapData mapData = selectedMaps[currentMapIndex];
+
+        currentMap = Instantiate(mapData.mapPrefab);
+
+        Debug.Log($"Round {currentMapIndex + 1} / {selectedMaps.Count}");
+        Debug.Log("Loaded map: " + mapData.mapName);
     }
 
-    public void LoadNextMap()
+    // ========================
+    // ROUND FLOW
+    // ========================
+    public void EndCurrentRound()
     {
-        // Destroy current map
+        Debug.Log("Round finished");
+
+        // TODO:
+        // - show round result UI
+        // - calculate score
+
+        // destroy current map
         if (currentMap != null)
         {
             Destroy(currentMap);
         }
 
-        // Check if finished all maps
-        if (currentMapIndex >= GameSettings.selectedMaps.Count)
+        currentMapIndex++;
+
+        LoadCurrentMap();
+    }
+
+    // ========================
+    // MATCH END
+    // ========================
+    void OnMatchFinished()
+    {
+        Debug.Log("=== MATCH FINISHED ===");
+
+        // TODO:
+        // - show final result UI
+        // - return to lobby or restart
+    }
+
+    // ========================
+    // RESTART
+    // ========================
+    void RestartMatch()
+    {
+        Debug.Log("Restart Match");
+
+        currentMapIndex = 0;
+
+        if (currentMap != null)
         {
-            Debug.Log("All maps finished!");
-            return;
+            Destroy(currentMap);
         }
 
-        // Get next map
-        var mapData = GameSettings.selectedMaps[currentMapIndex];
-
-        // Spawn it
-        currentMap = Instantiate(mapData.mapPrefab);
-
-        Debug.Log("Loaded map: " + mapData.mapName);
-
-        currentMapIndex++;
+        LoadCurrentMap();
     }
 }

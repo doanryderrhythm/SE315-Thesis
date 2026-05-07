@@ -1,68 +1,206 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
-using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Linq;
 
 public class MapSelectionUIManager : MonoBehaviour
 {
-    public TMP_Dropdown mapTypeDropdown;
-    public TMP_InputField mapCountInput;
-    public MapDatabase database;
+    [Header("UI - Preview")]
+    public Image bigPreviewImage;
+    public TMP_Text bigMapNameText;
 
-    public void OnStartClicked()
+    [Header("UI - Input")]
+    public TMP_InputField roundInput;
+    public TMP_Text warningText;
+    public Button startButton;
+
+    [Header("Cards")]
+    public MapCardUI cardPrefab;
+    public Transform cardParent;
+
+    [Header("Data")]
+    public List<MapGroup> allMapGroups;
+
+    private MapGroup selectedGroup;
+    private MapCardUI currentCard;
+
+    public Sprite randomPreviewSprite;
+    [SerializeField] private bool includeRandomCard = true;
+
+    void Start()
     {
-        Debug.Log("Start clicked!");
+        GenerateCards();
+        OnHoverMap(allMapGroups[0]);
 
-        int selectedIndex = mapTypeDropdown.value;
+        warningText.gameObject.SetActive(false);
 
-        bool isRandom = selectedIndex == mapTypeDropdown.options.Count - 1;
+        if (startButton != null)
+            startButton.interactable = false;
+    }
 
-        if (isRandom)
+    void GenerateCards()
+    {
+        // tạo 4 biome
+        foreach (var group in allMapGroups)
         {
-            int count;
-            if (!int.TryParse(mapCountInput.text, out count))
-                count = 1;
+            var card = Instantiate(cardPrefab, cardParent);
+            card.Init(group, this);
+        }
+        // thêm random card
+        if (includeRandomCard)
+        {
+            var randomCard = Instantiate(cardPrefab, cardParent);
+            randomCard.InitRandom(this);
+        }
+    }
 
-            SelectRandom(count);
+    public void SelectRandom(MapCardUI card)
+    {
+        if (currentCard != null)
+            currentCard.SetSelected(false);
+
+        currentCard = card;
+        selectedGroup = null;
+
+        currentCard.SetSelected(true);
+
+        ValidateRounds();
+    }
+
+    // ========================
+    // HOVER
+    // ========================
+    public void OnHoverMap(MapGroup data)
+    {
+        if (bigPreviewImage != null)
+            bigPreviewImage.sprite = data.previewImage;
+
+        if (bigMapNameText != null)
+            bigMapNameText.text = data.groupName;
+    }
+
+    // ========================
+    // SELECT
+    // ========================
+    public void SelectMap(MapCardUI card, MapGroup data)
+    {
+        if (currentCard != null)
+            currentCard.SetSelected(false);
+
+        currentCard = card;
+        OnHoverMap(data);
+        selectedGroup = data;
+
+        currentCard.SetSelected(true);
+
+        ValidateRounds();
+    }
+
+    // ========================
+    // INPUT CHANGE
+    // ========================
+    public void OnRoundChanged()
+    {
+        ValidateRounds();
+    }
+
+    // ========================
+    // VALIDATION
+    // ========================
+    void ValidateRounds()
+    {
+        int rounds;
+
+        if (!int.TryParse(roundInput.text, out rounds) || rounds <= 0)
+        {
+            warningText.text = "Invalid number";
+            warningText.gameObject.SetActive(true);
+            SetStartButton(false);
+            return;
+        }
+
+        // Random mode
+        if (selectedGroup == null)
+        {
+            int max = allMapGroups.Max(g => g.MaxRounds);
+
+            if (rounds > max)
+            {
+                warningText.text = "Max number selected";
+                warningText.gameObject.SetActive(true);
+                SetStartButton(false);
+            }
+            else
+            {
+                warningText.gameObject.SetActive(false);
+                SetStartButton(true);
+            }
+
+            return;
+        }
+
+        // Normal mode
+        if (rounds > selectedGroup.MaxRounds)
+        {
+            warningText.text = "Max number selected";
+            warningText.gameObject.SetActive(true);
+            SetStartButton(false);
         }
         else
         {
-            SelectByType((MapType)selectedIndex);
+            warningText.gameObject.SetActive(false);
+            SetStartButton(true);
         }
-
-        Debug.Log("Maps selected: " + GameSettings.selectedMaps.Count);
-
-        SceneManager.LoadScene("GameScene");
     }
-    void SelectByType(MapType type)
+
+    void SetStartButton(bool value)
     {
-        var maps = database.maps
-            .Where(m => m.mapType == type)
+        if (startButton != null)
+            startButton.interactable = value;
+    }
+
+    // ========================
+    // START GAME
+    // ========================
+    public void OnStartGame()
+{
+    int rounds = int.Parse(roundInput.text);
+
+    List<MapData> selectedMaps;
+
+    if (selectedGroup != null)
+    {
+        // chọn biome cụ thể
+        selectedMaps = selectedGroup.maps
+            .OrderBy(x => Random.value)
+            .Take(rounds)
             .ToList();
-
-        Shuffle(maps);
-
-        GameSettings.selectedMaps = maps;
     }
-
-    void SelectRandom(int count)
+    else
     {
-        var maps = new List<MapData>(database.maps);
+        // RANDOM biome
+        selectedMaps = new List<MapData>();
 
-        Shuffle(maps);
-
-        GameSettings.selectedMaps = maps.Take(count).ToList();
-    }
-
-    void Shuffle(List<MapData> list)
-    {
-        for (int i = 0; i < list.Count; i++)
+        for (int i = 0; i < rounds; i++)
         {
-            int rand = Random.Range(i, list.Count);
-            var temp = list[i];
-            list[i] = list[rand];
-            list[rand] = temp;
+            var randomGroup = allMapGroups[Random.Range(0, allMapGroups.Count)];
+            var randomMap = randomGroup.maps[Random.Range(0, randomGroup.maps.Count)];
+
+            selectedMaps.Add(randomMap);
         }
     }
+
+    // 🔥 truyền sang GameManager
+    GameSettings.selectedMaps = selectedMaps;
+
+    Debug.Log("=== START GAME ===");
+    foreach (var map in selectedMaps)
+    {
+        Debug.Log(map.mapName);
+    }
+
+    // 👉 load gameplay scene (nếu có)
+    // SceneManager.LoadScene("Gameplay");
+}
 }

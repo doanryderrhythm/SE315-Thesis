@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60b7a6f1b01a5a244983fca920b30127, type: 3}
   m_Name: jungle_03
   m_EditorClassIdentifier: Assembly-CSharp::MapData
-  mapName: 
-  mapType: 3
+  mapName: Jungle 3
+  previewImage: {fileID: 0}
   mapPrefab: {fileID: 5340397108256014107, guid: 24e456b659a23264ab0f8941a3b93e7d, type: 3}
+  type: 0

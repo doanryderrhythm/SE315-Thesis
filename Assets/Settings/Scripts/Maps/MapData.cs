@@ -1,9 +1,12 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewMap", menuName = "Game/Map")]
+[CreateAssetMenu(menuName = "Game/Map")]
 public class MapData : ScriptableObject
 {
     public string mapName;
-    public MapType mapType;
+    public Sprite previewImage;
+
     public GameObject mapPrefab;
+
+    public MapType type; // Fire, Ice...
 }
