@@ -15,4 +15,10 @@ MonoBehaviour:
   groupName: Jungle
   type: 3
   previewImage: {fileID: -4770570624914503950, guid: e2f53e58d02f9ca4fa802c603641bf19, type: 3}
-  maps: []
+  themeColor: {r: 0.6396227, g: 1, b: 0.6396227, a: 1}
+  maps:
+  - {fileID: 11400000, guid: 6e394907508eeb04787c2405ff4edd3c, type: 2}
+  - {fileID: 11400000, guid: f0e143bb69c77534797287fa9d8ad2ee, type: 2}
+  - {fileID: 11400000, guid: 35fef2cb3d0815d42a8e3fd8b1fbde6d, type: 2}
+  - {fileID: 11400000, guid: e7345c8d8b18ac44b8ab80c826a9127d, type: 2}
+  - {fileID: 11400000, guid: 88189ead2c2e50347aa2d30aa4e66511, type: 2}

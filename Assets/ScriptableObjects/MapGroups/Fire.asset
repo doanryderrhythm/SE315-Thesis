@@ -15,4 +15,9 @@ MonoBehaviour:
   groupName: Fire
   type: 2
   previewImage: {fileID: 8091981526066810400, guid: ec346abeb0c8b9c4fbbe4b57c3a90449, type: 3}
-  maps: []
+  themeColor: {r: 1, g: 0.7316315, b: 0.6320754, a: 1}
+  maps:
+  - {fileID: 11400000, guid: 8692f89a0586b4d43a1b32438ecd7098, type: 2}
+  - {fileID: 11400000, guid: 22b6c7286c779e949a45837799ce641b, type: 2}
+  - {fileID: 11400000, guid: dc28e58e8e6dfa6459dd8d90c633727a, type: 2}
+  - {fileID: 11400000, guid: 54ec4c3eb2c1ba54a8d5c6486f4f2bde, type: 2}

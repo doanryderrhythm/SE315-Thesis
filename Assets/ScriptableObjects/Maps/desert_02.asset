@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: desert_02
   m_EditorClassIdentifier: Assembly-CSharp::MapData
   mapName: Desert 2
-  previewImage: {fileID: 0}
+  previewImage: {fileID: -3974262803752809339, guid: caa5202bdbf66af4fb5daea27d20414f, type: 3}
   mapPrefab: {fileID: 8534601053380696327, guid: c281f47e43f7eeb4d9c18b58ad295098, type: 3}
   type: 0

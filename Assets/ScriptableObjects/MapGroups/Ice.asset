@@ -15,4 +15,9 @@ MonoBehaviour:
   groupName: Ice
   type: 1
   previewImage: {fileID: 6139756214849210613, guid: 4573483ce9725cc43930feebec97f6ba, type: 3}
-  maps: []
+  themeColor: {r: 0.61698115, g: 1, b: 1, a: 1}
+  maps:
+  - {fileID: 11400000, guid: 4054adcf302d9794b8c020fc8103e995, type: 2}
+  - {fileID: 11400000, guid: 22e9f85e5cea39643a624346e0e91bc3, type: 2}
+  - {fileID: 11400000, guid: e9d3daa6bc55820498e8fce457d2f768, type: 2}
+  - {fileID: 11400000, guid: d11f28c3e0b7d7c40a0cc92b57115f7c, type: 2}

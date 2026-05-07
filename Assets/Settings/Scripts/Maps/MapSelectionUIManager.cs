@@ -64,7 +64,7 @@ public class MapSelectionUIManager : MonoBehaviour
         selectedGroup = null;
 
         currentCard.SetSelected(true);
-
+        roundInput.text = "5";
         ValidateRounds();
     }
 
@@ -93,8 +93,26 @@ public class MapSelectionUIManager : MonoBehaviour
         selectedGroup = data;
 
         currentCard.SetSelected(true);
-
+        roundInput.text = data.MaxRounds.ToString();
         ValidateRounds();
+    }
+
+    public void OnRandomSelected()
+    {
+        if (bigPreviewImage != null)
+            bigPreviewImage.sprite = randomPreviewSprite;
+
+        if (bigMapNameText != null)
+            bigMapNameText.text = "Random";
+    }
+
+    public void OnMapSelected(MapGroup data)
+    {
+        if (bigPreviewImage != null)
+            bigPreviewImage.sprite = data.previewImage;
+
+        if (bigMapNameText != null)
+            bigMapNameText.text = data.groupName;
     }
 
     // ========================
@@ -110,50 +128,57 @@ public class MapSelectionUIManager : MonoBehaviour
     // ========================
     void ValidateRounds()
     {
-        int rounds;
-
-        if (!int.TryParse(roundInput.text, out rounds) || rounds <= 0)
-        {
-            warningText.text = "Invalid number";
-            warningText.gameObject.SetActive(true);
-            SetStartButton(false);
-            return;
-        }
+        int max;
 
         // Random mode
         if (selectedGroup == null)
         {
-            int max = allMapGroups.Max(g => g.MaxRounds);
+            max = allMapGroups.Max(g => g.MaxRounds);
+        }
+        else
+        {
+            max = selectedGroup.MaxRounds;
+        }
 
-            if (rounds > max)
-            {
-                warningText.text = "Max number selected";
-                warningText.gameObject.SetActive(true);
-                SetStartButton(false);
-            }
-            else
-            {
-                warningText.gameObject.SetActive(false);
-                SetStartButton(true);
-            }
+        // Empty input
+        if (string.IsNullOrWhiteSpace(roundInput.text))
+        {
+            warningText.text = "Map amount: " + max;
+            warningText.gameObject.SetActive(true);
 
+            SetStartButton(false);
             return;
         }
 
-        // Normal mode
-        if (rounds > selectedGroup.MaxRounds)
+        int rounds;
+
+        // Invalid input
+        if (!int.TryParse(roundInput.text, out rounds) || rounds <= 0)
         {
-            warningText.text = "Max number selected";
+            warningText.text = "Invalid input, max number allowed: " + max;
             warningText.gameObject.SetActive(true);
+
+            SetStartButton(false);
+            return;
+        }
+
+        // Exceeds max
+        if (rounds > max)
+        {
+            warningText.text = "Selected number exceeds the maximum allowed: " + max;
+            warningText.gameObject.SetActive(true);
+
             SetStartButton(false);
         }
         else
         {
-            warningText.gameObject.SetActive(false);
+            // Valid input
+            warningText.text = "Map amount: " + max;
+            warningText.gameObject.SetActive(true);
+
             SetStartButton(true);
         }
     }
-
     void SetStartButton(bool value)
     {
         if (startButton != null)
@@ -164,43 +189,45 @@ public class MapSelectionUIManager : MonoBehaviour
     // START GAME
     // ========================
     public void OnStartGame()
-{
-    int rounds = int.Parse(roundInput.text);
-
-    List<MapData> selectedMaps;
-
-    if (selectedGroup != null)
     {
-        // chọn biome cụ thể
-        selectedMaps = selectedGroup.maps
-            .OrderBy(x => Random.value)
-            .Take(rounds)
-            .ToList();
-    }
-    else
-    {
-        // RANDOM biome
-        selectedMaps = new List<MapData>();
+        int rounds = int.Parse(roundInput.text);
 
-        for (int i = 0; i < rounds; i++)
+        List<MapData> selectedMaps;
+
+        if (selectedGroup != null)
         {
-            var randomGroup = allMapGroups[Random.Range(0, allMapGroups.Count)];
-            var randomMap = randomGroup.maps[Random.Range(0, randomGroup.maps.Count)];
-
-            selectedMaps.Add(randomMap);
+            // chọn biome cụ thể
+            selectedMaps = selectedGroup.maps
+                .OrderBy(x => Random.value)
+                .Take(rounds)
+                .ToList();
         }
+        else
+        {
+            // RANDOM biome
+            selectedMaps = new List<MapData>();
+
+            for (int i = 0; i < rounds; i++)
+            {
+                var randomGroup = allMapGroups[Random.Range(0, allMapGroups.Count)];
+                var validMaps = randomGroup.maps.Where(m => m != null).ToList();
+
+                var randomMap = validMaps[Random.Range(0, validMaps.Count)];
+
+                selectedMaps.Add(randomMap);
+            }
+        }
+
+        // 🔥 truyền sang GameManager
+        GameSettings.selectedMaps = selectedMaps;
+
+        Debug.Log("=== START GAME ===");
+        foreach (var map in selectedMaps)
+        {
+            Debug.Log(map.mapName);
+        }
+
+        // 👉 load gameplay scene (nếu có)
+        // SceneManager.LoadScene("Gameplay");
     }
-
-    // 🔥 truyền sang GameManager
-    GameSettings.selectedMaps = selectedMaps;
-
-    Debug.Log("=== START GAME ===");
-    foreach (var map in selectedMaps)
-    {
-        Debug.Log(map.mapName);
-    }
-
-    // 👉 load gameplay scene (nếu có)
-    // SceneManager.LoadScene("Gameplay");
-}
 }

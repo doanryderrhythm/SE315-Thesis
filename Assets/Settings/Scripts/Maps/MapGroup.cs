@@ -8,7 +8,7 @@ public class MapGroup : ScriptableObject
     public MapType type;
 
     public Sprite previewImage;       // ảnh đại diện (không phải từng map)
-
+    public Color themeColor = Color.white;
     public List<MapData> maps;        // DANH SÁCH map nhỏ
 
     public int MaxRounds => maps.Count;

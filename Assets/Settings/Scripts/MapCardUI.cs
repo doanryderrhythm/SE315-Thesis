@@ -9,6 +9,7 @@ public class MapCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     public Image previewImage;
     public TMP_Text nameText;
     public GameObject highlight;
+    public Image backgroundImage;
 
     private MapGroup data;
     private MapSelectionUIManager manager;
@@ -21,6 +22,7 @@ public class MapCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
         nameText.text = data.groupName;
         previewImage.sprite = data.previewImage;
+        backgroundImage.color = data.themeColor;
 
         SetSelected(false);
     }
@@ -32,16 +34,12 @@ public class MapCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
         nameText.text = "Random";
         previewImage.sprite = manager.randomPreviewSprite;
-
         SetSelected(false);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         transform.localScale = Vector3.one * 1.05f;
-
-        if (manager != null)
-            manager.OnHoverMap(data);
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -50,15 +48,22 @@ public class MapCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     }
 
     public void OnPointerClick(PointerEventData eventData)
-{
-    if (manager != null)
     {
-        if (isRandom)
-            manager.SelectRandom(this);
-        else
-            manager.SelectMap(this, data);
+        if (manager != null)
+        {
+            if (isRandom)
+            {
+                manager.SelectRandom(this);
+                manager.OnRandomSelected(); // 🔥 thêm
+            }
+            else
+            {
+                manager.SelectMap(this, data);
+                manager.OnMapSelected(data); // 🔥 thêm
+            }
+        }
     }
-}
+
 
     public void SetSelected(bool value)
     {

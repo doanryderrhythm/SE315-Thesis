@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: fire_04
   m_EditorClassIdentifier: Assembly-CSharp::MapData
   mapName: Fire 4
-  previewImage: {fileID: 0}
+  previewImage: {fileID: 8091981526066810400, guid: ec346abeb0c8b9c4fbbe4b57c3a90449, type: 3}
   mapPrefab: {fileID: 5705799456977161591, guid: aa869e08796fdb34689a2419e33553a3, type: 3}
   type: 0

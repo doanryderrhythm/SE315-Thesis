@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: ice_03
   m_EditorClassIdentifier: Assembly-CSharp::MapData
   mapName: Ice 3
-  previewImage: {fileID: 0}
+  previewImage: {fileID: 6139756214849210613, guid: 4573483ce9725cc43930feebec97f6ba, type: 3}
   mapPrefab: {fileID: 4696893074410323678, guid: a6ac82a47dbf7ce49abf9c936f9100e0, type: 3}
   type: 0
