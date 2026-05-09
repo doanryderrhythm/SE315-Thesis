@@ -7,7 +7,9 @@ public class MapGroup : ScriptableObject
     public string groupName;          // Jungle, Desert...
     public MapType type;
 
-    public Sprite previewImage;       // ảnh đại diện (không phải từng map)
+    public Sprite previewImage;
+    public Sprite hoverPreviewImage;
+
     public Color themeColor = Color.white;
     public List<MapData> maps;        // DANH SÁCH map nhỏ
 

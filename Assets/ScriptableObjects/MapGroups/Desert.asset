@@ -15,6 +15,7 @@ MonoBehaviour:
   groupName: Desert
   type: 0
   previewImage: {fileID: -3974262803752809339, guid: caa5202bdbf66af4fb5daea27d20414f, type: 3}
+  hoverPreviewImage: {fileID: -6502559146448828946, guid: 98c832b254d63d24eb71aee2c44ad2d5, type: 3}
   themeColor: {r: 1, g: 0.94347024, b: 0.6396227, a: 1}
   maps:
   - {fileID: 11400000, guid: 5e0830ebc77c8474b93bc4080b3ae492, type: 2}

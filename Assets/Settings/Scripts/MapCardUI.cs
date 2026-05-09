@@ -39,12 +39,30 @@ public class MapCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        transform.localScale = Vector3.one * 1.05f;
+        transform.localScale = Vector3.one * 1.1f;
+
+        // change card image
+        if (!isRandom && data.hoverPreviewImage != null)
+        {
+            previewImage.sprite = data.hoverPreviewImage;
+        }
+
+        // tint background
+        if (!isRandom && manager != null)
+        {
+            manager.OnHoverMap(data);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         transform.localScale = Vector3.one;
+
+        // restore normal image
+        if (!isRandom)
+        {
+            previewImage.sprite = data.previewImage;
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)

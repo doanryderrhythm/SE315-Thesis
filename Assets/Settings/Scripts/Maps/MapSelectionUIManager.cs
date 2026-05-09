@@ -22,6 +22,9 @@ public class MapSelectionUIManager : MonoBehaviour
     [Header("Data")]
     public List<MapGroup> allMapGroups;
 
+    [Header("Background")]
+    public RawImage backgroundImage;
+
     private MapGroup selectedGroup;
     private MapCardUI currentCard;
 
@@ -78,6 +81,10 @@ public class MapSelectionUIManager : MonoBehaviour
 
         if (bigMapNameText != null)
             bigMapNameText.text = data.groupName;
+
+        // Background tint
+        if (backgroundImage != null)
+            backgroundImage.color = data.themeColor;
     }
 
     // ========================
