@@ -17793,6 +17793,14 @@ PrefabInstance:
       propertyPath: normalBulletPrefab
       value: 
       objectReference: {fileID: 3788025276769663731, guid: f6ebbe6752bd0476386d05d1aee3a9c1, type: 3}
+    - target: {fileID: 1000833921802350933, guid: 528f60aec4f2747ed9a8c7694b313e24, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: b94e31296c8549b458b49b125d6d0f54, type: 3}
+    - target: {fileID: 1000833921802350938, guid: 528f60aec4f2747ed9a8c7694b313e24, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1000833922525642785, guid: 528f60aec4f2747ed9a8c7694b313e24, type: 3}
       propertyPath: m_LocalPosition.x
       value: 19.73
@@ -50686,7 +50694,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6011745940017318817, guid: 9b05faf5fcfa5464fa1d40d1fe39b34b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 85.00071
+      value: 85.00095
       objectReference: {fileID: 0}
     - target: {fileID: 6534554564555545570, guid: 9b05faf5fcfa5464fa1d40d1fe39b34b, type: 3}
       propertyPath: m_AnchorMax.y
@@ -51329,6 +51337,10 @@ PrefabInstance:
       propertyPath: m_Actions
       value: 
       objectReference: {fileID: -944628639613478452, guid: 649de5c20d0ad244091971f316b7b4bc, type: 3}
+    - target: {fileID: 1000833921802350938, guid: 8c25b1f92ba47cf4cb6cf18e0d40f790, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1000833922525642785, guid: 8c25b1f92ba47cf4cb6cf18e0d40f790, type: 3}
       propertyPath: m_LocalPosition.x
       value: 20.188454
