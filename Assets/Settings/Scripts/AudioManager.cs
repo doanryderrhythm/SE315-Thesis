@@ -10,7 +10,9 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] AudioMixer audioMixer;
     [SerializeField] AudioSource sfxSource;
+
     [SerializeField] AudioClip hoverSound;
+    [SerializeField] AudioClip clickSound;
 
     private void OnEnable()
     {
@@ -69,22 +71,17 @@ public class AudioManager : MonoBehaviour
 
     public void AssignButtonSound()
     {
-        Button[] buttons = Resources.FindObjectsOfTypeAll<Button>();
+        Button[] buttons = GameObject.FindObjectsByType<Button>();
         foreach (Button button in buttons)
         {
-            EventTrigger eventTrigger = button.gameObject.GetComponent<EventTrigger>();
-            if (eventTrigger == null)
+            if (button.gameObject.GetComponent<HoverSound>() == null)
             {
-                eventTrigger = button.gameObject.AddComponent<EventTrigger>();
+                button.gameObject.AddComponent<HoverSound>();
             }
-
-            eventTrigger.triggers.RemoveAll(t => t.eventID == EventTriggerType.PointerEnter);
-
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            entry.eventID = EventTriggerType.PointerEnter;
-            entry.callback.AddListener((data) => { PlayHoverSound(); });
-
-            eventTrigger.triggers.Add(entry);
+            if (button.gameObject.GetComponent<ClickSound>() == null)
+            {
+                button.gameObject.AddComponent<ClickSound>();
+            }
         }
     }
     public void PlayHoverSound()
@@ -94,5 +91,29 @@ public class AudioManager : MonoBehaviour
             sfxSource.pitch = Random.Range(0.95f, 1.05f);
             sfxSource.PlayOneShot(hoverSound);
         }
+    }
+    public void PlayClickSound()
+    {
+        if (clickSound != null && sfxSource != null)
+        {
+            sfxSource.pitch = Random.Range(0.95f, 1.05f);
+            sfxSource.PlayOneShot(clickSound);
+        }
+    }
+}
+
+public class HoverSound : MonoBehaviour, IPointerEnterHandler
+{
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        AudioManager.Instance.PlayHoverSound();
+    }
+}
+
+public class ClickSound : MonoBehaviour, IPointerClickHandler
+{
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        AudioManager.Instance.PlayClickSound();
     }
 }
