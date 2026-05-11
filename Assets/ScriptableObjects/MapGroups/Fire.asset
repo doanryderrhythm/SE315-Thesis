@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbd7c04e7665b2248a87ba04d404cbe1, type: 3}
+  m_Name: Fire
+  m_EditorClassIdentifier: Assembly-CSharp::MapGroup
+  groupName: Fire
+  type: 2
+  previewImage: {fileID: 8091981526066810400, guid: ec346abeb0c8b9c4fbbe4b57c3a90449, type: 3}
+  hoverPreviewImage: {fileID: 3489835727156297165, guid: 607459ee7924eab43adfb041fec99826, type: 3}
+  themeColor: {r: 1, g: 0.7316315, b: 0.6320754, a: 1}
+  maps:
+  - {fileID: 11400000, guid: 8692f89a0586b4d43a1b32438ecd7098, type: 2}
+  - {fileID: 11400000, guid: 22b6c7286c779e949a45837799ce641b, type: 2}
+  - {fileID: 11400000, guid: dc28e58e8e6dfa6459dd8d90c633727a, type: 2}
+  - {fileID: 11400000, guid: 54ec4c3eb2c1ba54a8d5c6486f4f2bde, type: 2}
