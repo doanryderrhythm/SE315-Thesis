@@ -4,10 +4,25 @@ using System.Collections.Generic;
 public class GameManager : MonoBehaviour
 {
     [Header("Current Match")]
-    private int currentMapIndex = 0;
+    public int currentMapIndex = 0;
+
+    [Header("Players")]
+    public List<PlayerMatchData> players = new List<PlayerMatchData>();
+
     private GameObject currentMap;
 
-    private List<MapData> selectedMaps;
+    public List<MapData> selectedMaps;
+
+    void Awake()
+    {
+        if (FindObjectsByType<GameManager>(FindObjectsSortMode.None).Length > 1)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        DontDestroyOnLoad(gameObject);
+    }
 
     void Start()
     {
@@ -20,9 +35,11 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        currentMapIndex = 0;
-
-        LoadCurrentMap();
+        CreateMockPlayers(); //thanh
+        if (currentMap == null)
+        {
+            LoadCurrentMap();
+        }
     }
 
     void Update()
@@ -66,19 +83,13 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Round finished");
 
-        // TODO:
-        // - show round result UI
-        // - calculate score
-
-        // destroy current map
         if (currentMap != null)
         {
             Destroy(currentMap);
         }
 
-        currentMapIndex++;
-
-        LoadCurrentMap();
+        UnityEngine.SceneManagement.SceneManager
+            .LoadScene("RoundResultScene");
     }
 
     // ========================
@@ -91,6 +102,14 @@ public class GameManager : MonoBehaviour
         // TODO:
         // - show final result UI
         // - return to lobby or restart
+    }
+
+    public void LoadNextRound()
+    {
+        currentMapIndex++;
+
+        UnityEngine.SceneManagement.SceneManager
+            .LoadScene("GameScene");
     }
 
     // ========================
@@ -108,5 +127,49 @@ public class GameManager : MonoBehaviour
         }
 
         LoadCurrentMap();
+    }
+
+    void CreateMockPlayers()
+    {
+        players.Clear();
+
+        players.Add(new PlayerMatchData
+        {
+            playerName = "sunflower",
+            totalScore = 500,
+            gainedScore = 200,
+            totalKills = 12,
+            gainedKills = 5,
+            totalDeaths = 9,
+            gainedDeaths = 6,
+            rank = 1,
+            isLocalPlayer = true
+        });
+
+        players.Add(new PlayerMatchData
+        {
+            playerName = "ghost",
+            totalScore = 450,
+            gainedScore = 100,
+            totalKills = 10,
+            gainedKills = 2,
+            totalDeaths = 7,
+            gainedDeaths = 1,
+            rank = 2,
+            isLocalPlayer = false
+        });
+
+        players.Add(new PlayerMatchData
+        {
+            playerName = "blaze",
+            totalScore = 350,
+            gainedScore = 50,
+            totalKills = 6,
+            gainedKills = 1,
+            totalDeaths = 11,
+            gainedDeaths = 2,
+            rank = 3,
+            isLocalPlayer = false
+        });
     }
 }
