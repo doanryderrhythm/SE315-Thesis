@@ -1,8 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
-
+using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
+
+    private bool initialized = false;
     [Header("Current Match")]
     public int currentMapIndex = 0;
 
@@ -15,18 +18,24 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        if (FindObjectsByType<GameManager>(FindObjectsSortMode.None).Length > 1)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
+
+        Instance = this;
 
         DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
-        // Lấy danh sách map từ GameSettings (host đã set trước)
+        if (initialized)
+            return;
+
+        initialized = true;
+
         selectedMaps = GameSettings.selectedMaps;
 
         if (selectedMaps == null || selectedMaps.Count == 0)
@@ -35,11 +44,11 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        CreateMockPlayers(); //thanh
-        if (currentMap == null)
-        {
-            LoadCurrentMap();
-        }
+        CreateMockPlayers();
+
+        currentMapIndex = 0;
+
+        LoadCurrentMap();
     }
 
     void Update()
@@ -108,8 +117,19 @@ public class GameManager : MonoBehaviour
     {
         currentMapIndex++;
 
-        UnityEngine.SceneManagement.SceneManager
-            .LoadScene("GameScene");
+        SceneManager.sceneLoaded += OnGameplaySceneLoaded;
+
+        SceneManager.LoadScene("GameScene");
+    }
+
+    void OnGameplaySceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name != "GameScene")
+            return;
+
+        SceneManager.sceneLoaded -= OnGameplaySceneLoaded;
+
+        LoadCurrentMap();
     }
 
     // ========================

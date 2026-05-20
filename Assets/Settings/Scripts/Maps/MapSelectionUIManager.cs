@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class MapSelectionUIManager : MonoBehaviour
 {
@@ -234,7 +235,6 @@ public class MapSelectionUIManager : MonoBehaviour
             Debug.Log(map.mapName);
         }
 
-        // 👉 load gameplay scene (nếu có)
-        // SceneManager.LoadScene("Gameplay");
+        SceneManager.LoadScene("GameScene");
     }
 }
