@@ -10,10 +10,17 @@ public class RoundResultUI : MonoBehaviour
     public TMP_Text countdownText;
 
     [Header("Personal Summary")]
-    public TMP_Text scoreText;
-    public TMP_Text killsText;
-    public TMP_Text deathsText;
-    public TMP_Text rankText;
+    public TMP_Text rankOldText;
+    public TMP_Text rankNewText;
+
+    public TMP_Text scoreValueText;
+    public TMP_Text scoreGainText;
+
+    public TMP_Text killsValueText;
+    public TMP_Text killsGainText;
+
+    public TMP_Text deathsValueText;
+    public TMP_Text deathsGainText;
 
     [Header("Leaderboard")]
     public Transform rowsContainer;
@@ -64,23 +71,39 @@ public class RoundResultUI : MonoBehaviour
         PlayerMatchData localPlayer =
             gameManager.players[0];
 
-        scoreText.text =
-            localPlayer.totalScore +
-            " + " +
-            localPlayer.gainedScore;
+        scoreValueText.text =
+            localPlayer.totalScore.ToString();
 
-        killsText.text =
-            localPlayer.totalKills +
-            " + " +
-            localPlayer.gainedKills;
+        scoreGainText.text =
+            " + " + localPlayer.gainedScore;
 
-        deathsText.text =
-            localPlayer.totalDeaths +
-            " + " +
-            localPlayer.gainedDeaths;
+        killsValueText.text =
+            localPlayer.totalKills.ToString();
 
-        rankText.text =
-            localPlayer.rank.ToString();
+        killsGainText.text =
+            " + " + localPlayer.gainedKills;
+
+        deathsValueText.text =
+            localPlayer.totalDeaths.ToString();
+
+        deathsGainText.text =
+            " + " + localPlayer.gainedDeaths;
+
+        rankOldText.text =
+            localPlayer.previousRank.ToString();
+
+        rankNewText.text =
+            " ->" + localPlayer.rank.ToString();
+
+        bool changed =
+            localPlayer.previousRank != localPlayer.rank;
+
+        rankNewText.gameObject.SetActive(changed);
+
+        if (!changed)
+        {
+            rankOldText.gameObject.SetActive(false);
+        }
     }
 
     void GenerateLeaderboard()

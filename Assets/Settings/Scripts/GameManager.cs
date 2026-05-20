@@ -156,13 +156,14 @@ public class GameManager : MonoBehaviour
         players.Add(new PlayerMatchData
         {
             playerName = "sunflower",
+            rank = 2,
+            previousRank = 3,
             totalScore = 500,
             gainedScore = 200,
             totalKills = 12,
             gainedKills = 5,
             totalDeaths = 9,
             gainedDeaths = 6,
-            rank = 1,
             isLocalPlayer = true
         });
 

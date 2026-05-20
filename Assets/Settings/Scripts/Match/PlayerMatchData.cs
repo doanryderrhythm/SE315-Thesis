@@ -7,6 +7,7 @@ public class PlayerMatchData
     public string playerName;
 
     // TOTAL MATCH STATS
+    public int previousRank;
     public int totalScore;
     public int totalKills;
     public int totalDeaths;
