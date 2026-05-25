@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
@@ -9,25 +10,15 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
 
     [SerializeField] AudioMixer audioMixer;
-    [SerializeField] AudioSource sfxSource;
+    [SerializeField] AudioSource musicSource, sfxSource;
+    private Coroutine musicFadeCoroutine;
 
+    [Header("Scene Music")]
+    [SerializeField] AudioClip[] sceneMusic;
+
+    [Header("UI Sounds")]
     [SerializeField] AudioClip hoverSound;
     [SerializeField] AudioClip clickSound;
-
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        AssignButtonSound();
-    }
 
     private void Awake()
     {
@@ -43,6 +34,23 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        AssignButtonSound();
+        Debug.Log(SceneManager.GetActiveScene().buildIndex);
+        SceneMusic(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void SetVolume(string key, float volume)
@@ -69,9 +77,10 @@ public class AudioManager : MonoBehaviour
         LoadVolume();
     }
 
+    #region UI Sound Management
     public void AssignButtonSound()
     {
-        Button[] buttons = GameObject.FindObjectsByType<Button>();
+        Button[] buttons = GameObject.FindObjectsByType<Button>(FindObjectsInactive.Include);
         foreach (Button button in buttons)
         {
             if (button.gameObject.GetComponent<HoverSound>() == null)
@@ -100,6 +109,58 @@ public class AudioManager : MonoBehaviour
             sfxSource.PlayOneShot(clickSound);
         }
     }
+    #endregion
+
+    #region Scene Music Management
+    public void SceneMusic(int sceneNumber)
+    {
+        if (sceneNumber < 0 || sceneNumber >= sceneMusic.Length)
+        {
+            Debug.LogWarning("Scene index larger than number of musics.");
+            return;
+        }
+
+        AudioClip nextMusic = sceneMusic[sceneNumber];
+
+        if (musicSource.clip == nextMusic && musicSource.isPlaying)
+        {
+            return;
+        }
+
+        if (musicFadeCoroutine != null)
+        {
+            StopCoroutine(musicFadeCoroutine);
+        }
+        
+        musicFadeCoroutine = StartCoroutine(CrossFadeMusic(nextMusic, 1f));
+    }
+
+    private IEnumerator CrossFadeMusic(AudioClip nextClip, float duration)
+    {
+        float elapsedTime = 0f;
+        float startVolume = musicSource.volume;
+        while (elapsedTime < duration)
+        {
+            musicSource.volume = Mathf.Lerp(startVolume, 0f, elapsedTime / duration);
+            elapsedTime += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        musicSource.Stop();
+
+        musicSource.clip = nextClip;
+        Debug.Log(musicSource.clip.name);
+        musicSource.Play();
+        elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            musicSource.volume = Mathf.Lerp(0f, startVolume, elapsedTime / duration);
+            elapsedTime += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        musicSource.volume = startVolume;
+        musicSource.Play();
+    }
+    #endregion
 }
 
 public class HoverSound : MonoBehaviour, IPointerEnterHandler
