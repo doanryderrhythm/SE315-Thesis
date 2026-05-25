@@ -11,4 +11,9 @@ public class SelectionScreen : MonoBehaviour
     {
         SceneManager.LoadScene("Polish");
     }
+
+    public void CreateMap()
+    {
+        SceneManager.LoadScene("MapSelectionScene");
+    }
 }
