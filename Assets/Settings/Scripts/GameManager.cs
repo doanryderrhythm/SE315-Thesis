@@ -1,17 +1,41 @@
 using UnityEngine;
 using System.Collections.Generic;
-
+using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
+
+    private bool initialized = false;
     [Header("Current Match")]
-    private int currentMapIndex = 0;
+    public int currentMapIndex = 0;
+
+    [Header("Players")]
+    public List<PlayerMatchData> players = new List<PlayerMatchData>();
+
     private GameObject currentMap;
 
-    private List<MapData> selectedMaps;
+    public List<MapData> selectedMaps;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+
+        DontDestroyOnLoad(gameObject);
+    }
 
     void Start()
     {
-        // Lấy danh sách map từ GameSettings (host đã set trước)
+        if (initialized)
+            return;
+
+        initialized = true;
+
         selectedMaps = GameSettings.selectedMaps;
 
         if (selectedMaps == null || selectedMaps.Count == 0)
@@ -19,6 +43,8 @@ public class GameManager : MonoBehaviour
             Debug.LogError("No maps selected!");
             return;
         }
+
+        CreateMockPlayers();
 
         currentMapIndex = 0;
 
@@ -66,19 +92,13 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Round finished");
 
-        // TODO:
-        // - show round result UI
-        // - calculate score
-
-        // destroy current map
         if (currentMap != null)
         {
             Destroy(currentMap);
         }
 
-        currentMapIndex++;
-
-        LoadCurrentMap();
+        UnityEngine.SceneManagement.SceneManager
+            .LoadScene("RoundResultScene");
     }
 
     // ========================
@@ -91,6 +111,25 @@ public class GameManager : MonoBehaviour
         // TODO:
         // - show final result UI
         // - return to lobby or restart
+    }
+
+    public void LoadNextRound()
+    {
+        currentMapIndex++;
+
+        SceneManager.sceneLoaded += OnGameplaySceneLoaded;
+
+        SceneManager.LoadScene("GameScene");
+    }
+
+    void OnGameplaySceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name != "GameScene")
+            return;
+
+        SceneManager.sceneLoaded -= OnGameplaySceneLoaded;
+
+        LoadCurrentMap();
     }
 
     // ========================
@@ -108,5 +147,50 @@ public class GameManager : MonoBehaviour
         }
 
         LoadCurrentMap();
+    }
+
+    void CreateMockPlayers()
+    {
+        players.Clear();
+
+        players.Add(new PlayerMatchData
+        {
+            playerName = "sunflower",
+            rank = 2,
+            previousRank = 3,
+            totalScore = 500,
+            gainedScore = 200,
+            totalKills = 12,
+            gainedKills = 5,
+            totalDeaths = 9,
+            gainedDeaths = 6,
+            isLocalPlayer = true
+        });
+
+        players.Add(new PlayerMatchData
+        {
+            playerName = "ghost",
+            totalScore = 450,
+            gainedScore = 100,
+            totalKills = 10,
+            gainedKills = 2,
+            totalDeaths = 7,
+            gainedDeaths = 1,
+            rank = 2,
+            isLocalPlayer = false
+        });
+
+        players.Add(new PlayerMatchData
+        {
+            playerName = "blaze",
+            totalScore = 350,
+            gainedScore = 50,
+            totalKills = 6,
+            gainedKills = 1,
+            totalDeaths = 11,
+            gainedDeaths = 2,
+            rank = 3,
+            isLocalPlayer = false
+        });
     }
 }
