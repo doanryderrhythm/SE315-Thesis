@@ -102,7 +102,7 @@ ScriptedImporter:
     generateIndividualEvents: 1
     generateSpriteAtlas: 1
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639141251066512772
+  platformSettingsDirtyTick: 639152512680022653
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -148,6 +148,69 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 4, y: 4}
+  - name: gatling_turret_Frame_1
+    originalName: 
+    pivot: {x: 0.17948718, y: 0.5}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 26
+      width: 39
+      height: 14
+    spriteID: d4a56e31555a24942b5b6c8ccf2189fa
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 26}
+  - name: gatling_turret_Frame_2
+    originalName: 
+    pivot: {x: 0.17948718, y: 0.5}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 48
+      width: 39
+      height: 14
+    spriteID: 8170c1f8fa15ad34fbc28237b98a6da1
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 48}
+  - name: gatling_turret_Frame_3
+    originalName: 
+    pivot: {x: 0.17948718, y: 0.5}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 70
+      width: 39
+      height: 14
+    spriteID: e9b0b17d927b2634fa28690eca6e535d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 70}
   spriteSheetImportData: []
   tileSetImportData: []
   asepriteLayers:
@@ -163,7 +226,7 @@ ScriptedImporter:
     layerType: 0
     blendMode: 0
     cells:
-    - name: gatling_turret
+    - name: gatling_turret_Frame_0
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
@@ -172,6 +235,33 @@ ScriptedImporter:
         width: 39
         height: 14
       spriteId: 168756a703bbba244a1deed301a2e626
+    - name: gatling_turret_Frame_1
+      frameIndex: 1
+      additiveSortOrder: 0
+      cellRect:
+        x: 25
+        y: 25
+        width: 39
+        height: 14
+      spriteId: d4a56e31555a24942b5b6c8ccf2189fa
+    - name: gatling_turret_Frame_2
+      frameIndex: 2
+      additiveSortOrder: 0
+      cellRect:
+        x: 25
+        y: 25
+        width: 39
+        height: 14
+      spriteId: 8170c1f8fa15ad34fbc28237b98a6da1
+    - name: gatling_turret_Frame_3
+      frameIndex: 3
+      additiveSortOrder: 0
+      cellRect:
+        x: 25
+        y: 25
+        width: 39
+        height: 14
+      spriteId: e9b0b17d927b2634fa28690eca6e535d
     linkedCells: []
     tileCells: []
     tileSetIndex: 0
@@ -181,7 +271,7 @@ ScriptedImporter:
   - name: DefaultTexturePlatform
     overridden: 0
     ignorePlatformSupport: 0
-    maxTextureSize: 16384
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -206,4 +296,4 @@ ScriptedImporter:
   secondarySpriteTextures: []
   spritePackingTag: 
   canvasSize: {x: 64, y: 64}
-  previousTextureSize: {x: 64, y: 32}
+  previousTextureSize: {x: 64, y: 128}

@@ -45,9 +45,9 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -4022564529538553603, guid: 3a1cfb28f879b3f40995fe967b8252b6, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 457771d0864a67842a71c2fb0a3fdc1a, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -241,6 +241,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
   audioMixer: {fileID: 24100000, guid: 3a1cfb28f879b3f40995fe967b8252b6, type: 2}
+  musicSource: {fileID: 8471992804673301592}
   sfxSource: {fileID: 9050218182571985548}
+  sceneMusic:
+  - {fileID: 8300000, guid: 06aa7a08d32987d4ca16a1302d7ab8ab, type: 3}
+  - {fileID: 8300000, guid: 06aa7a08d32987d4ca16a1302d7ab8ab, type: 3}
+  - {fileID: 8300000, guid: 99bf451718c9a6f4d97e4b4ebc3a8b9f, type: 3}
+  - {fileID: 8300000, guid: 7aa5d38f485a67e4dbae27c3db7d67f2, type: 3}
   hoverSound: {fileID: 8300000, guid: a55f28e3634d99b40b5486918c0ab189, type: 3}
   clickSound: {fileID: 8300000, guid: a25a2ee49f38bf3458a54bba225f24b9, type: 3}
