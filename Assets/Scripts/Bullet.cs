@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Bullet : NetworkBehaviour
 {
     [Header("Bullet Settings")]
 
@@ -57,6 +59,8 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!IsServer) return;
+
         if (!canHit) return;
 
         if (collision.gameObject.CompareTag("Wall"))
@@ -101,9 +105,11 @@ public class Bullet : MonoBehaviour
             if (d != null)
             {
                 d.Die();
-                DestroyBullet();
-                return;
             }
+
+            DestroyBullet();
+
+            return;
         }
 
         if (collision.gameObject.CompareTag("Shield"))
@@ -128,7 +134,10 @@ public class Bullet : MonoBehaviour
             owner.ReturnAmmo();
         }
 
-        Destroy(gameObject);
+        if (IsServer)
+        {
+            GetComponent<NetworkObject>().Despawn();
+        }
     }
 
     void Update()

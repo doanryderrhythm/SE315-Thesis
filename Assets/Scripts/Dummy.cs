@@ -1,7 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using Unity.Netcode;
+using UnityEngine;
 
-public class Dummy : MonoBehaviour
+public class Dummy : NetworkBehaviour
 {
     [Header("Respawn Settings")]
     [SerializeField] private float respawnDelay = 3f;
@@ -50,25 +51,48 @@ public class Dummy : MonoBehaviour
         HandleMovement();
     }
 
+    [Rpc(SendTo.ClientsAndHost)]
+    void PlayExplosionClientRpc(Vector3 pos)
+    {
+        if (explosionEffect != null)
+        {
+            GameObject effect = Instantiate(
+                explosionEffect,
+                pos,
+                Quaternion.identity
+            );
+
+            Destroy(effect, 2f);
+        }
+    }
+
     public void Die()
     {
+        if (!IsServer) return;
+
         if (isDead) return;
 
         isDead = true;
 
         if (explosionEffect != null)
         {
-            Instantiate(explosionEffect, transform.position, Quaternion.identity);
+            PlayExplosionClientRpc(transform.position);
         }
 
         foreach (var r in renderers)
+        {
             r.enabled = false;
+        }
 
         foreach (var c in colliders)
+        {
             c.enabled = false;
+        }
 
         if (rb != null)
+        {
             rb.simulated = false;
+        }
 
         StartCoroutine(RespawnRoutine());
     }
@@ -97,6 +121,27 @@ public class Dummy : MonoBehaviour
         }
     }
 
+    [Rpc(SendTo.ClientsAndHost)]
+    void RespawnClientRpc()
+    {
+        foreach (var r in renderers)
+        {
+            r.enabled = false;
+        }
+
+        foreach (var c in colliders)
+        {
+            c.enabled = false;
+        }
+
+
+        if (rb != null)
+        {
+            rb.simulated = true;
+            rb.linearVelocity = Vector2.zero;
+        }
+    }
+
     IEnumerator RespawnRoutine()
     {
         yield return new WaitForSeconds(respawnDelay);
@@ -104,17 +149,7 @@ public class Dummy : MonoBehaviour
         transform.position = spawnPosition;
         transform.rotation = spawnRotation;
 
-        foreach (var r in renderers)
-            r.enabled = true;
-
-        foreach (var c in colliders)
-            c.enabled = true;
-
-        if (rb != null)
-        {
-            rb.simulated = true;
-            rb.linearVelocity = Vector2.zero;
-        }
+        RespawnClientRpc();
 
         isDead = false;
     }
