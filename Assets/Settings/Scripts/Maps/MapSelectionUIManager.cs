@@ -35,6 +35,17 @@ public class MapSelectionUIManager : MonoBehaviour
     void Start()
     {
         GenerateCards();
+
+        if (backgroundImage != null)
+        {
+            backgroundImage.texture = null;
+
+            Color color = Color.gray;
+            color.a = 0.5f;
+
+            backgroundImage.color = color;
+        }
+
         OnHoverMap(allMapGroups[0]);
 
         warningText.gameObject.SetActive(false);
@@ -77,15 +88,7 @@ public class MapSelectionUIManager : MonoBehaviour
     // ========================
     public void OnHoverMap(MapGroup data)
     {
-        if (bigPreviewImage != null)
-            bigPreviewImage.sprite = data.previewImage;
-
-        if (bigMapNameText != null)
-            bigMapNameText.text = data.groupName;
-
-        // Background tint
-        if (backgroundImage != null)
-            backgroundImage.color = data.themeColor;
+        
     }
 
     // ========================
@@ -116,11 +119,21 @@ public class MapSelectionUIManager : MonoBehaviour
 
     public void OnMapSelected(MapGroup data)
     {
-        if (bigPreviewImage != null)
+
+            if (bigPreviewImage != null)
             bigPreviewImage.sprite = data.previewImage;
 
         if (bigMapNameText != null)
             bigMapNameText.text = data.groupName;
+
+        // Background tint
+        if (backgroundImage != null) {
+            backgroundImage.color = data.themeColor;
+            Color color = backgroundImage.color;
+            color.a = 0.25f;
+            backgroundImage.color = color;
+            backgroundImage.texture = data.backgroundImage.texture;
+        }
     }
 
     // ========================

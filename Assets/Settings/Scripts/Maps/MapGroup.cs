@@ -9,6 +9,8 @@ public class MapGroup : ScriptableObject
 
     public Sprite previewImage;
     public Sprite hoverPreviewImage;
+    
+    public Sprite backgroundImage;
 
     public Color themeColor = Color.white;
     public List<MapData> maps;        // DANH SÁCH map nhỏ
