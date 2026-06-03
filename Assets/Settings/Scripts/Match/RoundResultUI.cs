@@ -32,7 +32,7 @@ public class RoundResultUI : MonoBehaviour
 
     void Start()
     {
-        gameManager = FindFirstObjectByType<GameManager>();
+        gameManager = GameManager.Instance;
 
         LoadUI();
         GenerateLeaderboard();
