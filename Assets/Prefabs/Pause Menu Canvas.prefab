@@ -1908,6 +1908,7 @@ GameObject:
   - component: {fileID: 3157395268565864021}
   - component: {fileID: 7225117006854542142}
   - component: {fileID: 1103636782151003351}
+  - component: {fileID: 7063790822826353434}
   - component: {fileID: 1982097909865400545}
   m_Layer: 5
   m_Name: Pause Menu Panel
@@ -1998,6 +1999,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!225 &7063790822826353434
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4283742136775461792}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &1982097909865400545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2563,13 +2576,14 @@ GameObject:
   - component: {fileID: 2142472115515519512}
   - component: {fileID: 6496835354173994441}
   - component: {fileID: 8718878890592172189}
+  - component: {fileID: 4329573902753962315}
   m_Layer: 5
   m_Name: Settings Menu Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8711818681027017127
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2669,6 +2683,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!225 &4329573902753962315
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5074900790232782899}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5139642475693737540
 GameObject:
   m_ObjectHideFlags: 0
@@ -4604,7 +4630,6 @@ GameObject:
   - component: {fileID: 1394692237142301201}
   - component: {fileID: 8941275788646397202}
   - component: {fileID: 3568559451728976345}
-  - component: {fileID: 4772464589679535922}
   m_Layer: 5
   m_Name: Pause Menu Canvas
   m_TagString: Untagged
@@ -4748,23 +4773,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenu
   playerInput: {fileID: 0}
-  canvasGroup: {fileID: 4772464589679535922}
-  pauseMenuUI: {fileID: 4283742136775461792}
-  settingsMenuUI: {fileID: 5074900790232782899}
+  pauseMenuCG: {fileID: 7063790822826353434}
+  settingsMenuCG: {fileID: 4329573902753962315}
   pauseMenuAnimator: {fileID: 1103636782151003351}
   settingsMenuAnimator: {fileID: 8718878890592172189}
---- !u!225 &4772464589679535922
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8427438810438508329}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!1 &8588574111436484981
 GameObject:
   m_ObjectHideFlags: 0
