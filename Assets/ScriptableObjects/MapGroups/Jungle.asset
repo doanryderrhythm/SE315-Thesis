@@ -16,6 +16,7 @@ MonoBehaviour:
   type: 3
   previewImage: {fileID: -4770570624914503950, guid: e2f53e58d02f9ca4fa802c603641bf19, type: 3}
   hoverPreviewImage: {fileID: 7442156471289023685, guid: 0dc0dbe185e855545a6f9b227be9e954, type: 3}
+  backgroundImage: {fileID: -2235182994182763702, guid: 10300b72d5e3ac34bacb3595e6a0f794, type: 3}
   themeColor: {r: 0.6396227, g: 1, b: 0.6396227, a: 1}
   maps:
   - {fileID: 11400000, guid: 6e394907508eeb04787c2405ff4edd3c, type: 2}

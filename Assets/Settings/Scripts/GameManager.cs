@@ -71,12 +71,6 @@ public class GameManager : MonoBehaviour
     // ========================
     void LoadCurrentMap()
     {
-        if (currentMapIndex >= selectedMaps.Count)
-        {
-            OnMatchFinished();
-            return;
-        }
-
         MapData mapData = selectedMaps[currentMapIndex];
 
         currentMap = Instantiate(mapData.mapPrefab);
@@ -97,20 +91,16 @@ public class GameManager : MonoBehaviour
             Destroy(currentMap);
         }
 
-        UnityEngine.SceneManagement.SceneManager
-            .LoadScene("RoundResultScene");
-    }
+        bool isLastRound = currentMapIndex >= selectedMaps.Count - 1;
 
-    // ========================
-    // MATCH END
-    // ========================
-    void OnMatchFinished()
-    {
-        Debug.Log("=== MATCH FINISHED ===");
-
-        // TODO:
-        // - show final result UI
-        // - return to lobby or restart
+        if (isLastRound)
+        {
+            SceneManager.LoadScene("MatchResultScene");
+        }
+        else
+        {
+            SceneManager.LoadScene("RoundResultScene");
+        }
     }
 
     public void LoadNextRound()
@@ -180,17 +170,17 @@ public class GameManager : MonoBehaviour
             isLocalPlayer = false
         });
 
-        players.Add(new PlayerMatchData
-        {
-            playerName = "blaze",
-            totalScore = 350,
-            gainedScore = 50,
-            totalKills = 6,
-            gainedKills = 1,
-            totalDeaths = 11,
-            gainedDeaths = 2,
-            rank = 3,
-            isLocalPlayer = false
-        });
+        // players.Add(new PlayerMatchData
+        // {
+        //     playerName = "blaze",
+        //     totalScore = 350,
+        //     gainedScore = 50,
+        //     totalKills = 6,
+        //     gainedKills = 1,
+        //     totalDeaths = 11,
+        //     gainedDeaths = 2,
+        //     rank = 3,
+        //     isLocalPlayer = false
+        // });
     }
 }
