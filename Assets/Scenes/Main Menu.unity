@@ -500,10 +500,10 @@ RectTransform:
   - {fileID: 1387579246}
   m_Father: {fileID: 12739679}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.05, y: 0.7}
+  m_AnchorMax: {x: 0.55, y: 0.9}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &325673239
 GameObject:
@@ -917,10 +917,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 309969144}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.05, y: 0.7}
-  m_AnchorMax: {x: 0.55, y: 0.9}
-  m_AnchoredPosition: {x: -333, y: 299}
-  m_SizeDelta: {x: 910.9561, y: 207.6289}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 10, y: -10}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &541626287
 MonoBehaviour:
@@ -944,8 +944,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Tank DSQ
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a94f207c44f499342833bc5f1b5e79ce, type: 2}
-  m_sharedMaterial: {fileID: -6563326874679106501, guid: a94f207c44f499342833bc5f1b5e79ce, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 7dee06098effaef4f9bf48cd55936f0e, type: 2}
+  m_sharedMaterial: {fileID: -1457860720621954054, guid: 7dee06098effaef4f9bf48cd55936f0e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -969,7 +969,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 192.2
+  m_fontSize: 188.1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2219,10 +2219,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 309969144}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.05, y: 0.7}
-  m_AnchorMax: {x: 0.55, y: 0.9}
-  m_AnchoredPosition: {x: -344.38242, y: 311.44342}
-  m_SizeDelta: {x: 910.9561, y: 207.6289}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1387579247
 MonoBehaviour:
@@ -2246,8 +2246,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Tank DSQ
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a94f207c44f499342833bc5f1b5e79ce, type: 2}
-  m_sharedMaterial: {fileID: -6563326874679106501, guid: a94f207c44f499342833bc5f1b5e79ce, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 7dee06098effaef4f9bf48cd55936f0e, type: 2}
+  m_sharedMaterial: {fileID: -1457860720621954054, guid: 7dee06098effaef4f9bf48cd55936f0e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2271,7 +2271,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 192.2
+  m_fontSize: 188.1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
