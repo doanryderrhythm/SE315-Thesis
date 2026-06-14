@@ -7,18 +7,11 @@ using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance;
+    public static AudioManager Instance { get; private set; }
 
     [SerializeField] AudioMixer audioMixer;
-    [SerializeField] AudioSource musicSource, sfxSource;
-    private Coroutine musicFadeCoroutine;
-
-    [Header("Scene Music")]
-    [SerializeField] AudioClip[] sceneMusic;
-
-    [Header("UI Sounds")]
-    [SerializeField] AudioClip hoverSound;
-    [SerializeField] AudioClip clickSound;
+    public MusicManager Music { get; private set; }
+    public SoundManager Sound { get; private set; }
 
     private void Awake()
     {
@@ -26,6 +19,9 @@ public class AudioManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            Music = GetComponentInChildren<MusicManager>();
+            Sound = GetComponentInChildren<SoundManager>();
 
             StartCoroutine(InitializeVolume());
             LoadVolume();
@@ -36,21 +32,14 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
+    private void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
 
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
+    private void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        AssignButtonSound();
-        Debug.Log(SceneManager.GetActiveScene().buildIndex);
-        SceneMusic(SceneManager.GetActiveScene().buildIndex);
+        Sound.AssignButtonSound();
+        Music.PlaySceneMusic(scene.buildIndex);
     }
 
     public void SetVolume(string key, float volume)
@@ -63,12 +52,9 @@ public class AudioManager : MonoBehaviour
 
     private void LoadVolume()
     {
-        float masterVolume = PlayerPrefs.GetFloat("Master", 1f);
-        float sfxVolume = PlayerPrefs.GetFloat("SFX", 1f);
-        float bgmVolume = PlayerPrefs.GetFloat("BGM", 1f);
-        SetVolume("Master", masterVolume);
-        SetVolume("SFX", sfxVolume);
-        SetVolume("BGM", bgmVolume);
+        SetVolume("Master", PlayerPrefs.GetFloat("Master", 1f));
+        SetVolume("SFX", PlayerPrefs.GetFloat("SFX", 1f));
+        SetVolume("BGM", PlayerPrefs.GetFloat("BGM", 1f));
     }
 
     private System.Collections.IEnumerator InitializeVolume()
@@ -78,6 +64,7 @@ public class AudioManager : MonoBehaviour
     }
 
     #region UI Sound Management
+    /*
     public void AssignButtonSound()
     {
         Button[] buttons = GameObject.FindObjectsByType<Button>(FindObjectsInactive.Include);
@@ -159,7 +146,7 @@ public class AudioManager : MonoBehaviour
         }
         musicSource.volume = startVolume;
         musicSource.Play();
-    }
+    }*/
     #endregion
 }
 
@@ -167,7 +154,7 @@ public class HoverSound : MonoBehaviour, IPointerEnterHandler
 {
     public void OnPointerEnter(PointerEventData eventData)
     {
-        AudioManager.Instance.PlayHoverSound();
+        AudioManager.Instance.Sound.PlayHoverSound();
     }
 }
 
@@ -175,6 +162,6 @@ public class ClickSound : MonoBehaviour, IPointerClickHandler
 {
     public void OnPointerClick(PointerEventData eventData)
     {
-        AudioManager.Instance.PlayClickSound();
+        AudioManager.Instance.Sound.PlayClickSound();
     }
 }
