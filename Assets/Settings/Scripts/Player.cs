@@ -180,7 +180,8 @@ public class Player : NetworkBehaviour
                 if (cookingBombRoutine != null)
                     StopCoroutine(cookingBombRoutine);
 
-                ShootBomb(currentCookTime);
+
+                ShootBombServerRpc(currentCookTime);
 
                 currentWeapon = WeaponType.Normal;
                 return;
@@ -344,6 +345,8 @@ public class Player : NetworkBehaviour
 
     void ShootBomb(float cookedTime)
     {
+        if (!IsServer) return;
+
         float remainingTime = Mathf.Max(0f, bombLifeTime - cookedTime);
 
         GameObject bullet = Instantiate(
@@ -351,6 +354,20 @@ public class Player : NetworkBehaviour
             firePoint.position,
             firePoint.rotation
         );
+
+        Bullet bomb = bullet.GetComponent<Bullet>();
+        if (bomb != null)
+        {
+            bomb.owner = this;
+            bomb.isBomb = true;
+            bomb.SetNormalBulletPrefab(normalBulletPrefab);
+        }
+
+        NetworkObject netObj = bullet.GetComponent<NetworkObject>();
+        if (netObj != null)
+        {
+            netObj.Spawn();
+        }
 
         Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
         if (rbBullet != null)
@@ -364,13 +381,8 @@ public class Player : NetworkBehaviour
             trail.enabled = false;
         }
 
-        Bullet bomb = bullet.GetComponent<Bullet>();
         if (bomb != null)
         {
-            bomb.owner = this;
-            bomb.isBomb = true;
-            bomb.SetNormalBulletPrefab(normalBulletPrefab);
-
             bomb.StartBombTimer(remainingTime);
         }
     }
@@ -436,6 +448,40 @@ public class Player : NetworkBehaviour
     void PlaceMineServerRpc()
     {
         PlaceMine();
+    }
+
+    [Rpc(SendTo.Server)]
+    void ShootBombServerRpc(float cookedTime)
+    {
+        ShootBomb(cookedTime);
+    }
+
+    [Rpc(SendTo.Server)]
+    void ExplodeBombInHandServerRpc()
+    {
+        GameObject tempBomb = Instantiate(
+            bombBulletPrefab,
+            transform.position,
+            Quaternion.identity
+        );
+
+        NetworkObject tempBombNet = tempBomb.GetComponent<NetworkObject>();
+        if (tempBombNet != null)
+        {
+            tempBombNet.Spawn();
+        }
+
+        Bullet b = tempBomb.GetComponent<Bullet>();
+        if (b != null)
+        {
+            b.owner = this;
+            b.isBomb = true;
+            b.SetNormalBulletPrefab(normalBulletPrefab);
+            b.ForceExplode();
+        }
+
+        Die();
+        currentWeapon = WeaponType.Normal;
     }
 
     void PlaceMine()
@@ -504,23 +550,8 @@ public class Player : NetworkBehaviour
 
             if (remainingTime <= 0f)
             {
-                GameObject tempBomb = Instantiate(
-                    bombBulletPrefab,
-                    transform.position,
-                    Quaternion.identity
-                );
+                ExplodeBombInHandServerRpc();
 
-                Bullet b = tempBomb.GetComponent<Bullet>();
-                if (b != null)
-                {
-                    b.owner = this;
-                    b.isBomb = true;
-                    b.SetNormalBulletPrefab(normalBulletPrefab);
-
-                    b.ForceExplode();
-                }
-
-                Die();
                 currentWeapon = WeaponType.Normal;
                 isCookingBomb = false;
                 yield break;

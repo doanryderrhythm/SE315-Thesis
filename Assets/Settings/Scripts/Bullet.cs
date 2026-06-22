@@ -164,23 +164,30 @@ public class Bullet : NetworkBehaviour
 
             GameObject bullet = Instantiate(normalBulletPrefab, spawnPos, Quaternion.identity);
 
+            Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
+            rbBullet.linearVelocity = dir.normalized * splitBulletSpeed;
+
             TrailRenderer trail = bullet.GetComponent<TrailRenderer>();
             if (trail != null)
             {
                 trail.enabled = false;
             }
 
-            Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
-            rbBullet.linearVelocity = dir.normalized * splitBulletSpeed;
-
             Bullet b = bullet.GetComponent<Bullet>();
-
             if (b != null)
             {
                 b.owner = owner;
                 b.useLifeTime = true;
-
                 b.SetLifeTimeMultiplier(childLifeMultiplier);
+            }
+
+            if (IsServer)
+            {
+                NetworkObject netObj = bullet.GetComponent<NetworkObject>();
+                if (netObj != null)
+                {
+                    netObj.Spawn();
+                }
             }
         }
     }
