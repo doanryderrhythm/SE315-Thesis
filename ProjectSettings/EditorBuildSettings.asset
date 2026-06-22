@@ -26,5 +26,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MatchResultScene.unity
     guid: 3b0ae9ac0ba40794fbd9092eef39253a
+  - enabled: 1
+    path: Assets/Scenes/Player_Maps(test).unity
+    guid: ac2df2ee871ed8f4c9050f2ca49f864d
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

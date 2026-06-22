@@ -1,8 +1,11 @@
+using System;
+using System.Collections;
+using System.Globalization;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
     #region Player Settings
 
@@ -30,7 +33,18 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("Speed of the bullet")]
     private float bulletSpeed = 10f;
 
+    [SerializeField, Tooltip("Bomb lifetime")]
+    private float bombLifeTime = 5f;
+
     [SerializeField] private float gatlingBulletSpeed = 10f;
+
+    private Coroutine cookingBombRoutine;
+    private float currentCookTime = 0f;
+
+    [Header("Bomb Audio")]
+    [SerializeField] private AudioSource cookTickAudio;
+
+    private float nextCookTickTime = 0f;
 
     #endregion
 
@@ -44,11 +58,16 @@ public class Player : MonoBehaviour
 
     private int currentAmmo;
 
+    private float bombHoldStartTime;
+    private bool isCookingBomb = false;
+
     #endregion
 
     #region Weapon Settings
 
     [SerializeField] private GameObject normalBulletPrefab;
+
+    [SerializeField] private GameObject laserBulletPrefab;
 
     [SerializeField] private GameObject shieldObject;
     [SerializeField] private float shieldDuration = 15f;
@@ -56,7 +75,7 @@ public class Player : MonoBehaviour
     private Coroutine shieldCoroutine;
 
     [SerializeField] private GameObject minePrefab;
-    
+
     [SerializeField] private GameObject bombBulletPrefab;
 
     #endregion
@@ -75,16 +94,24 @@ public class Player : MonoBehaviour
     private float rotateInput;
     private Vector2 moveInput;
     private WeaponType currentWeapon = WeaponType.Normal;
-    private bool isFiring = false;
+    private bool serverIsFiring = false;
+    private PlayerInput playerInput;
+    private Vector2 networkMoveInput;
 
     #endregion
 
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
         rb = GetComponent<Rigidbody2D>();
+        playerInput = GetComponent<PlayerInput>();
 
-        float randomAngle = Random.Range(0f, 360f);
+        if (!IsOwner)
+        {
+            playerInput.enabled = false;
+        }
+
+        float randomAngle = UnityEngine.Random.Range(0f, 360f);
         transform.rotation = Quaternion.Euler(0, 0, randomAngle);
 
         currentAmmo = maxAmmo;
@@ -92,11 +119,27 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        HandleMovement();
+        if (IsOwner)
+        {
+            MoveServerRpc(moveInput);
+        }
+
+        if (IsServer)
+        {
+            HandleMovement(networkMoveInput);
+        }
+    }
+
+    [Rpc(SendTo.Server)]
+    void MoveServerRpc(Vector2 input)
+    {
+        networkMoveInput = input;
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (!IsOwner) return;
+
         moveInput = context.ReadValue<Vector2>();
     }
 
@@ -104,49 +147,97 @@ public class Player : MonoBehaviour
     {
         if (context.started)
         {
+            if (currentWeapon == WeaponType.Bomb)
+            {
+                isCookingBomb = true;
+                currentCookTime = 0f;
+                nextCookTickTime = 0f;
+
+                if (cookingBombRoutine != null)
+                    StopCoroutine(cookingBombRoutine);
+
+                cookingBombRoutine = StartCoroutine(CookBombRoutine());
+                return;
+            }
+
             if (currentWeapon == WeaponType.Gatling)
             {
-                isFiring = true;
-                StartCoroutine(GatlingFire());
+                serverIsFiring = true;
+                StartGatlingServerRpc();
+                return;
             }
-            else
-            {
-                Shoot();
-            }
+
+            Shoot();
+            return;
         }
 
         if (context.canceled)
         {
-            isFiring = false;
+            if (currentWeapon == WeaponType.Bomb && isCookingBomb)
+            {
+                isCookingBomb = false;
+
+                if (cookingBombRoutine != null)
+                    StopCoroutine(cookingBombRoutine);
+
+                ShootBomb(currentCookTime);
+
+                currentWeapon = WeaponType.Normal;
+                return;
+            }
 
             if (currentWeapon == WeaponType.Gatling)
             {
+                StopGatlingServerRpc();
+
                 currentWeapon = WeaponType.Normal;
+                return;
             }
         }
     }
 
     #region Movement
 
-    void HandleMovement()
+    void HandleMovement(Vector2 input)
     {
-        float forward = moveInput.y;
-        float rotate = -moveInput.x;
+        float forward = input.y;
+        float rotate = -input.x;
 
-        rb.MoveRotation(rb.rotation + rotate * rotateSpeed * Time.fixedDeltaTime);
+        rb.MoveRotation(
+            rb.rotation + rotate * rotateSpeed * Time.fixedDeltaTime
+        );
 
         Vector2 movement = transform.right * forward * moveSpeed;
+
         rb.linearVelocity = movement;
     }
 
     #endregion
 
     #region Effects
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void PlayExplosionClientRpc(Vector3 pos)
+    {
+        if (explosionEffect != null)
+        {
+            GameObject effect = Instantiate(
+                explosionEffect,
+                pos,
+                Quaternion.identity
+            );
+
+            Destroy(effect, 2f);
+        }
+    }
+
     public void Die()
     {
-        Instantiate(explosionEffect, transform.position, Quaternion.identity);
+        if (!IsServer) return;
 
-        Destroy(gameObject);
+        PlayExplosionClientRpc(transform.position);
+
+        GetComponent<NetworkObject>().Despawn();
     }
 
     #endregion
@@ -163,35 +254,35 @@ public class Player : MonoBehaviour
         switch (currentWeapon)
         {
             case WeaponType.Normal:
-                ShootNormal();
+                ShootServerRpc();
                 break;
 
             case WeaponType.Laser:
-                ShootLaser();
+                ShootLaserServerRpc();
                 currentWeapon = WeaponType.Normal;
                 break;
 
             case WeaponType.Mine:
-                PlaceMine();
+                PlaceMineServerRpc();
                 currentWeapon = WeaponType.Normal;
                 break;
 
             case WeaponType.Bomb:
-                ShootBomb();
-                currentWeapon = WeaponType.Normal;
                 break;
         }
     }
 
     IEnumerator GatlingFire()
     {
+        if (!IsServer) yield break;
+
         int bulletCount = 0;
 
-        while (isFiring && bulletCount < 15)
+        while (serverIsFiring && bulletCount < 15)
         {
             bulletCount++;
 
-            float spread = Random.Range(-15f, 15f);
+            float spread = UnityEngine.Random.Range(-15f, 15f);
             Vector2 dir = Quaternion.Euler(0, 0, spread) * firePoint.right;
 
             SpawnBullet(dir, 0.6f, gatlingBulletSpeed);
@@ -202,25 +293,46 @@ public class Player : MonoBehaviour
         currentWeapon = WeaponType.Normal;
     }
 
-    void ShootNormal()
+    [Rpc(SendTo.Server)]
+    void ShootServerRpc()
     {
         SpawnBullet(firePoint.right);
     }
 
+    [Rpc(SendTo.Server)]
+    void StartGatlingServerRpc()
+    {
+        serverIsFiring = true;
+
+        StartCoroutine(GatlingFire());
+    }
+
+    [Rpc(SendTo.Server)]
+    void StopGatlingServerRpc()
+    {
+        serverIsFiring = false;
+    }
+
+    [Rpc(SendTo.Server)]
+    void ShootLaserServerRpc()
+    {
+        ShootLaser();
+    }
+
     void ShootLaser()
     {
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        GameObject bullet = Instantiate(laserBulletPrefab, firePoint.position, firePoint.rotation);
+
+        bullet.GetComponent<NetworkObject>().Spawn();
 
         TrailRenderer trail = bullet.GetComponent<TrailRenderer>();
-        if (trail != null)
-        {
-            trail.enabled = true;
-        }
 
         Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
+
         rbBullet.linearVelocity = firePoint.right * bulletSpeed * 5f;
 
         Bullet b = bullet.GetComponent<Bullet>();
+
         if (b != null)
         {
             b.owner = this;
@@ -230,12 +342,21 @@ public class Player : MonoBehaviour
         }
     }
 
-    void ShootBomb()
+    void ShootBomb(float cookedTime)
     {
-        GameObject bullet = Instantiate(bombBulletPrefab, firePoint.position, firePoint.rotation);
+        float remainingTime = Mathf.Max(0f, bombLifeTime - cookedTime);
+
+        GameObject bullet = Instantiate(
+            bombBulletPrefab,
+            firePoint.position,
+            firePoint.rotation
+        );
 
         Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
-        rbBullet.linearVelocity = firePoint.right * bulletSpeed;
+        if (rbBullet != null)
+        {
+            rbBullet.linearVelocity = firePoint.right * bulletSpeed;
+        }
 
         TrailRenderer trail = bullet.GetComponent<TrailRenderer>();
         if (trail != null)
@@ -243,19 +364,22 @@ public class Player : MonoBehaviour
             trail.enabled = false;
         }
 
-        Bullet b = bullet.GetComponent<Bullet>();
-        if (b != null)
+        Bullet bomb = bullet.GetComponent<Bullet>();
+        if (bomb != null)
         {
-            b.owner = this;
-            b.isBomb = true;
+            bomb.owner = this;
+            bomb.isBomb = true;
+            bomb.SetNormalBulletPrefab(normalBulletPrefab);
 
-            b.SetNormalBulletPrefab(normalBulletPrefab);
+            bomb.StartBombTimer(remainingTime);
         }
     }
 
     void SpawnBullet(Vector2 direction, float scale = 1f, float speedOverride = -1f)
     {
         GameObject bullet = Instantiate(normalBulletPrefab, firePoint.position, Quaternion.identity);
+
+        bullet.GetComponent<NetworkObject>().Spawn();
 
         TrailRenderer trail = bullet.GetComponent<TrailRenderer>();
         if (trail != null)
@@ -308,11 +432,20 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Rpc(SendTo.Server)]
+    void PlaceMineServerRpc()
+    {
+        PlaceMine();
+    }
+
     void PlaceMine()
     {
         GameObject mine = Instantiate(minePrefab, transform.position, Quaternion.identity);
 
+        mine.GetComponent<NetworkObject>().Spawn();
+
         Mine m = mine.GetComponent<Mine>();
+
         if (m != null)
         {
             m.SetOwner(this);
@@ -340,12 +473,12 @@ public class Player : MonoBehaviour
 
     public void ActivateShield()
     {
-        if (shieldCoroutine != null)
-        {
-            StopCoroutine(shieldCoroutine);
-        }
+        //if (shieldCoroutine != null)
+        //{
+        //    StopCoroutine(shieldCoroutine);
+        //}
 
-        shieldCoroutine = StartCoroutine(ShieldRoutine());
+        //shieldCoroutine = StartCoroutine(ShieldRoutine());
     }
 
     IEnumerator ShieldRoutine()
@@ -358,4 +491,61 @@ public class Player : MonoBehaviour
     }
 
     #endregion
+
+    IEnumerator CookBombRoutine()
+    {
+        currentCookTime = 0f;
+
+        while (isCookingBomb)
+        {
+            currentCookTime += Time.deltaTime;
+
+            float remainingTime = bombLifeTime - currentCookTime;
+
+            if (remainingTime <= 0f)
+            {
+                GameObject tempBomb = Instantiate(
+                    bombBulletPrefab,
+                    transform.position,
+                    Quaternion.identity
+                );
+
+                Bullet b = tempBomb.GetComponent<Bullet>();
+                if (b != null)
+                {
+                    b.owner = this;
+                    b.isBomb = true;
+                    b.SetNormalBulletPrefab(normalBulletPrefab);
+
+                    b.ForceExplode();
+                }
+
+                Die();
+                currentWeapon = WeaponType.Normal;
+                isCookingBomb = false;
+                yield break;
+            }
+
+            if (remainingTime <= 3f)
+            {
+                float tickInterval = Mathf.Lerp(
+                    0.35f,
+                    0.06f,
+                    1f - (remainingTime / 3f)
+                );
+
+                if (Time.time >= nextCookTickTime)
+                {
+                    if (cookTickAudio != null)
+                    {
+                        cookTickAudio.PlayOneShot(cookTickAudio.clip);
+                    }
+
+                    nextCookTickTime = Time.time + tickInterval;
+                }
+            }
+
+            yield return null;
+        }
+    }
 }

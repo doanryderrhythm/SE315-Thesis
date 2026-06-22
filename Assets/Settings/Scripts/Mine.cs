@@ -1,7 +1,10 @@
-using UnityEngine;
+using System;
 using System.Collections;
+using Unity.Netcode;
+using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
-public class Mine : MonoBehaviour
+public class Mine : NetworkBehaviour
 {
     [Header("Timing")]
     [SerializeField] private float armDelay = 1f;
@@ -103,6 +106,8 @@ public class Mine : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (!IsServer) return;
+
         if (!isArmed) return;
 
         if (other.TryGetComponent<Player>(out var p))
@@ -118,11 +123,26 @@ public class Mine : MonoBehaviour
         }
     }
 
+    [Rpc(SendTo.ClientsAndHost)]
+    void PlayExplosionClientRpc(Vector3 pos)
+    {
+        if (explosionEffect != null)
+        {
+            GameObject effect = Instantiate(
+                explosionEffect,
+                pos,
+                Quaternion.identity
+            );
+
+            Destroy(effect, 2f);
+        }
+    }
+
     void Explode()
     {
         if (explosionEffect != null)
         {
-            Instantiate(explosionEffect, transform.position, Quaternion.identity);
+            PlayExplosionClientRpc(transform.position);
         }
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
@@ -140,7 +160,7 @@ public class Mine : MonoBehaviour
             }
         }
 
-        Destroy(gameObject);
+        GetComponent<NetworkObject>().Despawn();
     }
 
     void OnDrawGizmos()

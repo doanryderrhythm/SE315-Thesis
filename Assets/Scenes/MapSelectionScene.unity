@@ -172,7 +172,6 @@ MonoBehaviour:
   cardParent: {fileID: 1692515517}
   allMapGroups:
   - {fileID: 11400000, guid: 06e5438807ad3404b824c3eca2f6053c, type: 2}
-  - {fileID: 11400000, guid: 2f188ad8e03cd8f4081d6f8c48022544, type: 2}
   - {fileID: 11400000, guid: dd3d2997f52c7f64a8d6eaaf68c654f5, type: 2}
   - {fileID: 11400000, guid: b3189a8cf2dbbd645ad707a554ee7225, type: 2}
   backgroundImage: {fileID: 2056878043}
