@@ -320,6 +320,13 @@ public class Player : NetworkBehaviour
         ShootLaser();
     }
 
+    [Rpc(SendTo.Owner)]
+    public void SetWeaponClientRpc(WeaponType newWeapon)
+    {
+        Debug.Log($"[Player RPC] SetWeaponClientRpc received on Owner. IsServer={IsServer}, IsOwner={IsOwner}, newWeapon={newWeapon}, Instance={gameObject.name}");
+        SetWeapon(newWeapon);
+    }
+
     void ShootLaser()
     {
         GameObject bullet = Instantiate(laserBulletPrefab, firePoint.position, firePoint.rotation);
