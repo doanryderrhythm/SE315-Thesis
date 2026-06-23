@@ -250,8 +250,6 @@ public class Player : NetworkBehaviour
     {
         if (currentAmmo <= 0) return;
 
-        currentAmmo--;
-
         switch (currentWeapon)
         {
             case WeaponType.Normal:
@@ -297,6 +295,11 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Server)]
     void ShootServerRpc()
     {
+        if (currentAmmo <= 0)
+            return;
+
+        currentAmmo--;
+
         SpawnBullet(firePoint.right);
     }
 
