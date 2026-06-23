@@ -22,11 +22,37 @@ public class TankColorController : MonoBehaviour
 
     private void Start()
     {
+        if (PlayerPrefs.HasKey("ColorR") && PlayerPrefs.HasKey("ColorG") && PlayerPrefs.HasKey("ColorB"))
+        {
+            Color savedColor = new Color(
+                PlayerPrefs.GetFloat("ColorR"),
+                PlayerPrefs.GetFloat("ColorG"),
+                PlayerPrefs.GetFloat("ColorB"));
+            Color.RGBToHSV(savedColor, out currentHue, out currentSat, out currentVal);
+            Debug.Log("Loaded color: " + savedColor + " with HSV: " + currentHue + ", " + currentSat + ", " + currentVal);
+        }
+        else
+        {
+            currentHue = 0f;
+            currentSat = 0f;
+            currentVal = 1f;
+        }
+
         CreateHueImage();
 
         CreateSVImage();
 
         CreateOutputImage();
+
+        if (hueSlider != null)
+        {
+            hueSlider.SetValueWithoutNotify(currentHue);
+        }
+
+        if (svControl != null)
+        {
+            svControl.SetPickerFromHex();
+        }
 
         UpdateOutputImage();
     }
@@ -43,7 +69,7 @@ public class TankColorController : MonoBehaviour
         }
 
         hueTexture.Apply();
-        currentHue = 1f;
+        //currentHue = 1f;
         hueImage.texture = hueTexture;
     }
 
@@ -65,8 +91,8 @@ public class TankColorController : MonoBehaviour
         }
 
         svTexture.Apply();
-        currentSat = 0f;
-        currentVal = 1f;
+        //currentSat = 0f;
+        //currentVal = 1f;
 
         satValImage.texture = svTexture;
     }

@@ -66,7 +66,6 @@ public class SVImageControl : MonoBehaviour, IDragHandler, IPointerClickHandler
         float posY = yNorm*deltaY*2 - deltaY;
 
         pickerTransform.localPosition = new Vector3(posX, posY, 0);
-        UpdatePickerColor();
     }
 
     public void OnDrag(PointerEventData eventData)
