@@ -9,7 +9,7 @@ public class SelectionScreen : MonoBehaviour
     }
     public void MapSelect()
     {
-        SceneManager.LoadScene("Polish");
+        SceneManager.LoadScene("Practice Room");
     }
 
     public void CreateMap()

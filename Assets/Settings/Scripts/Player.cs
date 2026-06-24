@@ -106,6 +106,11 @@ public class Player : NetworkBehaviour
         rb = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
 
+        if (IsOwner)
+        {
+            PauseMenu.Instance.RegisterPlayerInput(playerInput);
+        }
+
         if (!IsOwner)
         {
             playerInput.enabled = false;

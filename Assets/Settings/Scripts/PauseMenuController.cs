@@ -5,9 +5,11 @@ using UnityEngine.InputSystem;
 
 public class PauseMenu : MonoBehaviour
 {
-    public static bool GameIsPaused = false;
+    public static PauseMenu Instance { get; private set; }
+
+    public static bool isGamePaused = false;
     private float duration = 0.25f;
-    [SerializeField] private PlayerInput playerInput;
+    private PlayerInput playerInput;
 
     [Header("Canvas Groups")]
     [SerializeField] private CanvasGroup pauseMenuCG;
@@ -19,7 +21,17 @@ public class PauseMenu : MonoBehaviour
 
     private void Awake()
     {
-        GameIsPaused = false;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        isGamePaused = false;
 
         SetCGState(pauseMenuCG, false);
         pauseMenuCG.alpha = 0f;
@@ -31,7 +43,7 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (GameIsPaused)
+            if (isGamePaused)
             {
                 Resume();
             }
@@ -44,9 +56,18 @@ public class PauseMenu : MonoBehaviour
     
     private void Pause()
     {
-        GameIsPaused = true;
-        Time.timeScale = 0f;
-        playerInput.SwitchCurrentActionMap("UI");
+        isGamePaused = true;
+
+        if (SceneManager.GetActiveScene().name == "Practice Room")
+        {
+            Time.timeScale = 0f;
+        }
+
+        if(playerInput != null)
+        {
+            playerInput.SwitchCurrentActionMap("UI");
+            Debug.Log("Switching to UI Input");
+        }
 
         SetCGState(pauseMenuCG, true);
         StartCoroutine(FadeCG(pauseMenuCG, 0f, 1f));
@@ -86,9 +107,14 @@ public class PauseMenu : MonoBehaviour
 
     private IEnumerator CloseMenuRoutine()
     {
-        GameIsPaused = false;
+        isGamePaused = false;
         Time.timeScale = 1f;
-        playerInput.SwitchCurrentActionMap("Player");
+
+        if(playerInput != null)
+        {
+            playerInput.SwitchCurrentActionMap("Player");
+            Debug.Log("Switching to Player Input");
+        }
 
         SetCGState(pauseMenuCG, false);
         SetCGState(settingsMenuCG, false);
@@ -124,5 +150,10 @@ public class PauseMenu : MonoBehaviour
     {
         cg.interactable = active;
         cg.blocksRaycasts = active;
+    }
+
+    public void RegisterPlayerInput(PlayerInput input)
+    {
+        playerInput = input;
     }
 }

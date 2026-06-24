@@ -1450,8 +1450,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbead1d5034f5ce48948ba5c6dd6c9a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_ButtonHover
-  scale_rate: 1.5
-  rotation_rate: 1.5
+  scale_rate: 1.2
+  rotation_rate: 1.25
   speed: 10
 --- !u!114 &7638485108805340432
 MonoBehaviour:
@@ -2153,8 +2153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbead1d5034f5ce48948ba5c6dd6c9a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_ButtonHover
-  scale_rate: 1.5
-  rotation_rate: 1.5
+  scale_rate: 1.2
+  rotation_rate: 1.25
   speed: 10
 --- !u!114 &768991371990837454
 MonoBehaviour:
@@ -4772,7 +4772,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98dfe2cf5f4f37444956379566a395ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenu
-  playerInput: {fileID: 0}
   pauseMenuCG: {fileID: 7063790822826353434}
   settingsMenuCG: {fileID: 4329573902753962315}
   pauseMenuAnimator: {fileID: 1103636782151003351}
@@ -5032,8 +5031,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbead1d5034f5ce48948ba5c6dd6c9a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_ButtonHover
-  scale_rate: 1.5
-  rotation_rate: 1.5
+  scale_rate: 1.2
+  rotation_rate: 1.25
   speed: 10
 --- !u!114 &429791085962918531
 MonoBehaviour:
