@@ -1,8 +1,13 @@
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    private void Start()
+    {
+        PhotonNetwork.Disconnect();
+    }
     public void PlayGame()
     {
         SceneManager.LoadScene("Selection Screen");

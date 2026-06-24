@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
 public class MapSelectionUIManager : MonoBehaviour
 {
@@ -242,12 +243,15 @@ public class MapSelectionUIManager : MonoBehaviour
         // 🔥 truyền sang GameManager
         GameSettings.selectedMaps = selectedMaps;
 
-        Debug.Log("=== START GAME ===");
-        foreach (var map in selectedMaps)
-        {
-            Debug.Log(map.mapName);
-        }
+        string[] mapNames = selectedMaps.Select(m => m.mapName).ToArray();
+        string serializedMaps = string.Join(",", mapNames);
 
-        SceneManager.LoadScene("GameScene");
+        ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+        {
+            { "selectedMaps", serializedMaps }
+        };
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(props);
+        PhotonNetwork.LoadLevel("GameScene");
     }
 }
