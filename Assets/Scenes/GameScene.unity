@@ -150,6 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   currentMapIndex: 0
   players: []
+  mapRegistry: {fileID: 11400000, guid: c81c5dfe49dc6ba4b83a28ccce304f29, type: 2}
   selectedMaps: []
 --- !u!4 &128469847
 Transform:

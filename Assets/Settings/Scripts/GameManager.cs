@@ -1,5 +1,6 @@
-using UnityEngine;
+using Photon.Pun;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class GameManager : MonoBehaviour
 
     [Header("Players")]
     public List<PlayerMatchData> players = new List<PlayerMatchData>();
+
+    [Header("Data")]
+    public MapRegistry mapRegistry;
 
     private GameObject currentMap;
 
@@ -36,7 +40,14 @@ public class GameManager : MonoBehaviour
 
         initialized = true;
 
-        selectedMaps = GameSettings.selectedMaps;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            selectedMaps = GameSettings.selectedMaps;
+        }
+        else
+        {
+            selectedMaps = LoadMapsFromRoomProperties();
+        }
 
         if (selectedMaps == null || selectedMaps.Count == 0)
         {
@@ -69,6 +80,32 @@ public class GameManager : MonoBehaviour
     // ========================
     // LOAD MAP
     // ========================
+    List<MapData> LoadMapsFromRoomProperties()
+    {
+        var props = PhotonNetwork.CurrentRoom.CustomProperties;
+
+        if (!props.ContainsKey("selectedMaps"))
+        {
+            Debug.LogError("No map data found in room properties!");
+            return null;
+        }
+
+        string serialized = (string)props["selectedMaps"];
+        string[] mapNames = serialized.Split(',');
+
+        var result = new List<MapData>();
+        foreach (var name in mapNames)
+        {
+            MapData map = mapRegistry.GetByName(name);
+            if (map != null)
+                result.Add(map);
+            else
+                Debug.LogWarning($"Map not found in registry: {name}");
+        }
+
+        return result;
+    }
+
     void LoadCurrentMap()
     {
         MapData mapData = selectedMaps[currentMapIndex];
