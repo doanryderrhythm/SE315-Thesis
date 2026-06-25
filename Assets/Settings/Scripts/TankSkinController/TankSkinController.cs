@@ -4,10 +4,11 @@ using System.Collections.Generic;
 public class TankSkinController : MonoBehaviour
 {
     [Header("Renderers")]
-    public SpriteRenderer baseRenderer;
-    public SpriteRenderer turretRenderer;
+    [SerializeField] private SpriteRenderer baseRenderer;
+    [SerializeField] private SpriteRenderer turretRenderer;
 
-    public TankSkinLibrary skinLibrary;
+    [SerializeField] private TankSkinLibrary skinLibrary;
+
     private int currentSkinIndex = 0;
 
     void Awake() 
@@ -18,26 +19,29 @@ public class TankSkinController : MonoBehaviour
 
     public void NextSkin()
     {
-        currentSkinIndex = (currentSkinIndex + 1) % skinLibrary.allSkins.Count;
+        if (skinLibrary.allSkins.Count == 0) return;
+
+        currentSkinIndex++;
+        if (currentSkinIndex >= skinLibrary.allSkins.Count) currentSkinIndex = 0;
         ApplySkin(currentSkinIndex);
     }
 
     public void PreviousSkin()
     {
+        if (skinLibrary.allSkins.Count == 0) return;
+
         currentSkinIndex--;
         if (currentSkinIndex < 0) currentSkinIndex = skinLibrary.allSkins.Count - 1;
         ApplySkin(currentSkinIndex);
     }
 
-    public void ApplySkin(int index)
+    private void ApplySkin(int index)
     {
-        if (skinLibrary.allSkins.Count == 0) return;
-
         var skin = skinLibrary.allSkins[index];
 
-        baseRenderer.sprite = skin.baseSprite;
-        turretRenderer.sprite = skin.turretSprite;
-        
+        if (baseRenderer) baseRenderer.sprite = skin.baseSprite;
+        if (turretRenderer) turretRenderer.sprite = skin.turretSprite;
+
         PlayerPrefs.SetInt("SelectedSkinIndex", index);
     }
 }
