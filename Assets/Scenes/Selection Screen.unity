@@ -899,8 +899,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbead1d5034f5ce48948ba5c6dd6c9a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_ButtonHover
-  scale_rate: 1.5
-  rotation_rate: 1.5
+  scale_rate: 1.2
+  rotation_rate: 1.25
   speed: 10
 --- !u!114 &364279127
 MonoBehaviour:
@@ -2652,7 +2652,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f79c9cd1c20531488b0cdecebd34026, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomList
-  createAndJoin: {fileID: 0}
   roomPrefab: {fileID: 9186469245484053996, guid: 4686d4f20efa67b49bafd29b479ef21f, type: 3}
 --- !u!1 &1218724455
 GameObject:

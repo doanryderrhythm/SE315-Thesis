@@ -3,8 +3,8 @@ using UnityEngine.EventSystems;
 
 public class UI_ButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public float scale_rate = 1.5f;
-    public float rotation_rate = 1.5f;
+    public float scale_rate = 1.2f;
+    public float rotation_rate = 1.25f;
     public float speed = 10f;
 
     private Vector3 original_scale;
