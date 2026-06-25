@@ -9,26 +9,38 @@ public class RoomList : MonoBehaviourPunCallbacks
     [SerializeField] GameObject roomPrefab;
     GameObject[] allRooms = new GameObject[0];
 
+    private Dictionary<string, GameObject> roomEntries = new Dictionary<string, GameObject>();
+
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        for (int i = 0; i < allRooms.Length; i++)
+        foreach (RoomInfo info in roomList)
         {
-            if (allRooms[i] != null)
-                Destroy(allRooms[i]);
-        }
-
-        allRooms = new GameObject[roomList.Count];
-
-        for (int i = 0; i < roomList.Count; i++)
-        {
-            if (roomList[i].IsOpen && roomList[i].IsVisible && roomList[i].PlayerCount >= 1)
+            if (info.RemovedFromList)
             {
-                GameObject room = Instantiate(roomPrefab, Vector3.zero, Quaternion.identity, transform);
+                if (roomEntries.TryGetValue(info.Name, out GameObject room))
+                {
+                    Destroy(room);
+                    roomEntries.Remove(info.Name);
+                }
 
-                RoomElement roomElement = room.GetComponent<RoomElement>();
-                roomElement.roomText.text = roomList[i].Name;
+                continue;
+            }
 
-                allRooms[i] = room;
+            if (!roomEntries.ContainsKey(info.Name))
+            {
+                GameObject room = Instantiate(roomPrefab, transform);
+
+                RoomElement element = room.GetComponent<RoomElement>();
+                element.roomText.text = info.Name;
+
+                roomEntries.Add(info.Name, room);
+            }
+            else
+            {
+                RoomElement element =
+                    roomEntries[info.Name].GetComponent<RoomElement>();
+
+                element.roomText.text = info.Name;
             }
         }
     }
