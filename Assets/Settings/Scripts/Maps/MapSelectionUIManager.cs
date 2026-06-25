@@ -212,6 +212,9 @@ public class MapSelectionUIManager : MonoBehaviour
     // ========================
     public void OnStartGame()
     {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
         int rounds = int.Parse(roundInput.text);
 
         List<MapData> selectedMaps;
@@ -253,5 +256,14 @@ public class MapSelectionUIManager : MonoBehaviour
 
         PhotonNetwork.CurrentRoom.SetCustomProperties(props);
         PhotonNetwork.LoadLevel("GameScene");
+    }
+
+    public void CloseRoom()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
     }
 }
