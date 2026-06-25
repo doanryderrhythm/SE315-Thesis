@@ -1,5 +1,7 @@
 using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
@@ -111,9 +113,6 @@ public class GameManager : MonoBehaviour
         MapData mapData = selectedMaps[currentMapIndex];
 
         currentMap = Instantiate(mapData.mapPrefab);
-
-        Debug.Log($"Round {currentMapIndex + 1} / {selectedMaps.Count}");
-        Debug.Log("Loaded map: " + mapData.mapName);
     }
 
     // ========================

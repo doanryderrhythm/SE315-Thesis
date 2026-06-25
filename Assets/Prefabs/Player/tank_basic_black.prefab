@@ -109,6 +109,7 @@ GameObject:
   - component: {fileID: 5706681580552384059}
   - component: {fileID: -5963846901383554334}
   - component: {fileID: -8497413361643032097}
+  - component: {fileID: -2967964759296910610}
   m_Layer: 3
   m_Name: tank_basic_black
   m_TagString: Player
@@ -269,6 +270,11 @@ MonoBehaviour:
   minePrefab: {fileID: 4206375443370986579, guid: 0ee958da4773fe549b5d3e4f7a2cadae, type: 3}
   bombBulletPrefab: {fileID: 3788025276769663731, guid: 83c39d0f3b164874d94bf77f20d8e4ab, type: 3}
   explosionEffect: {fileID: 708970565015777803, guid: 4da477b0d5aa60849802c98cfc5a60fd, type: 3}
+  isDead:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
 --- !u!50 &4637239405441563506
 Rigidbody2D:
   serializedVersion: 5
@@ -615,6 +621,23 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &-2967964759296910610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000833922525642786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody2D
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkRigidbodyBaseExpanded: 0
+  UseRigidBodyForMotion: 0
+  AutoUpdateKinematicState: 1
+  AutoSetKinematicOnDespawn: 1
 --- !u!1 &5365503902083070280
 GameObject:
   m_ObjectHideFlags: 0
