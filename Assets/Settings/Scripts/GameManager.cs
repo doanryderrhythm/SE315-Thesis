@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPunCallbacks
 {
     public static GameManager Instance;
 
@@ -122,6 +122,9 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Round finished");
 
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
         if (currentMap != null)
         {
             Destroy(currentMap);
@@ -131,29 +134,52 @@ public class GameManager : MonoBehaviour
 
         if (isLastRound)
         {
-            SceneManager.LoadScene("MatchResultScene");
+            PhotonNetwork.LoadLevel("MatchResultScene");
         }
         else
         {
-            SceneManager.LoadScene("RoundResultScene");
+            PhotonNetwork.LoadLevel("RoundResultScene");
         }
     }
 
     public void LoadNextRound()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
+
         currentMapIndex++;
 
-        SceneManager.sceneLoaded += OnGameplaySceneLoaded;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(
+            new ExitGames.Client.Photon.Hashtable { { "currentMapIndex", currentMapIndex } }
+        );
 
-        SceneManager.LoadScene("GameScene");
+        if (NetworkManager.Singleton.IsListening)
+            NetworkManager.Singleton.Shutdown();
+
+        PhotonNetwork.LoadLevel("GameScene");
+    }
+
+    public override void OnEnable()
+    {
+        base.OnEnable();
+        SceneManager.sceneLoaded += OnGameplaySceneLoaded;
+    }
+
+    public override void OnDisable()
+    {
+        base.OnDisable();
+        SceneManager.sceneLoaded -= OnGameplaySceneLoaded;
     }
 
     void OnGameplaySceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name != "GameScene")
-            return;
+        if (scene.name != "GameScene") return;
 
-        SceneManager.sceneLoaded -= OnGameplaySceneLoaded;
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            var props = PhotonNetwork.CurrentRoom.CustomProperties;
+            if (props.ContainsKey("currentMapIndex"))
+                currentMapIndex = (int)props["currentMapIndex"];
+        }
 
         LoadCurrentMap();
     }
