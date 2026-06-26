@@ -95,7 +95,17 @@ public class TankSkinLoader : NetworkBehaviour
 
         if(baseAnimator)
         {
-            baseAnimator.runtimeAnimatorController = skin.baseAnimator;
+            if (skin.baseAnimator)
+            {
+                baseAnimator.enabled = true;
+                baseAnimator.runtimeAnimatorController = skin.baseAnimator;
+            }
+            else
+            {
+                baseAnimator.runtimeAnimatorController = null;
+                baseAnimator.enabled = false;
+                baseRenderer.sprite = skin.baseSprite;
+            }
         }
     }
 
