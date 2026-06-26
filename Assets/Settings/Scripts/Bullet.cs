@@ -92,8 +92,19 @@ public class Bullet : NetworkBehaviour
 
             if (p != null)
             {
+                if (p != owner)
+                {
+                    p.AddDeathClientRpc();
+                    owner.AddKillClientRpc();
+                }
+                else
+                {
+                    p.AddDeathClientRpc();
+                }
+
                 p.Die();
             }
+
 
             DestroyBullet();
             return;

@@ -1,7 +1,12 @@
+using Photon.Pun;
+using Photon.Pun.UtilityScripts;
+using Photon.Realtime;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class RoundResultUI : MonoBehaviour
 {
@@ -33,6 +38,8 @@ public class RoundResultUI : MonoBehaviour
     void Start()
     {
         gameManager = GameManager.Instance;
+        if (gameManager == null)
+            return;
 
         LoadUI();
         GenerateLeaderboard();
@@ -68,6 +75,7 @@ public class RoundResultUI : MonoBehaviour
                 + ")";
         }
 
+        /*
         PlayerMatchData localPlayer =
             gameManager.players[0];
 
@@ -104,6 +112,7 @@ public class RoundResultUI : MonoBehaviour
         {
             rankOldText.gameObject.SetActive(false);
         }
+        */
     }
 
     void GenerateLeaderboard()
@@ -113,18 +122,22 @@ public class RoundResultUI : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        gameManager.players.Sort((a, b) =>
-            b.totalScore.CompareTo(a.totalScore));
+        Photon.Realtime.Player[] players = PhotonNetwork.PlayerList;
+        if (players == null || players.Length == 0)
+            return;
 
-        for (int i = 0; i < gameManager.players.Count; i++)
-        {
-            gameManager.players[i].rank = i + 1;
-        }
+        Array.Sort(players, (a, b) => b.GetScore().CompareTo(a.GetScore()));
 
-        for (int i = 0; i < gameManager.players.Count; i++)
+        for (int i = 0; i < players.Length; i++)
         {
-            PlayerMatchData player =
-                gameManager.players[i];
+            PlayerMatchData playerData = new PlayerMatchData();
+            playerData.playerName = players[i].NickName;
+            playerData.rank = i + 1;
+            playerData.totalScore = players[i].GetScore();
+            if (players[i].CustomProperties.ContainsKey("Kills"))
+                playerData.totalKills = (int)players[i].CustomProperties["Kills"];
+            if (players[i].CustomProperties.ContainsKey("Deaths"))
+                playerData.totalDeaths = (int)players[i].CustomProperties["Deaths"];
 
             GameObject row =
                 Instantiate(
@@ -132,10 +145,10 @@ public class RoundResultUI : MonoBehaviour
                     rowsContainer
                 );
 
-            bool isLocalPlayer = player.isLocalPlayer;
+            bool isLocalPlayer = players[i].IsLocal;
 
             row.GetComponent<LeaderboardRowUI>()
-                .Setup(player, isLocalPlayer);
+                .Setup(playerData, isLocalPlayer);
         }
     }
 

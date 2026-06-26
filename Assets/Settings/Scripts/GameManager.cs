@@ -245,4 +245,20 @@ public class GameManager : MonoBehaviourPunCallbacks
         //     isLocalPlayer = false
         // });
     }
+
+    //MATCH PROPERTIES
+    private Dictionary<ulong, int> clientToPhoton =
+        new Dictionary<ulong, int>();
+
+    public void RegisterPlayer(
+        ulong clientId,
+        int photonActorNumber)
+    {
+        clientToPhoton[clientId] = photonActorNumber;
+    }
+
+    public int GetActorNumber(ulong clientId)
+    {
+        return clientToPhoton[clientId];
+    }
 }

@@ -1,3 +1,7 @@
+using ExitGames.Client.Photon;
+using Photon.Pun;
+using Photon.Pun.UtilityScripts;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Globalization;
@@ -633,6 +637,40 @@ public class Player : NetworkBehaviour
         }
     }
 
+    #endregion
+
+    #region ONLINE STATISTICS
+    [Rpc(SendTo.Owner)]
+    public void AddKillClientRpc()
+    {
+        Photon.Realtime.Player localP = PhotonNetwork.LocalPlayer;
+        if (localP == null) return;
+
+        int kills = localP.CustomProperties.ContainsKey("Kills")
+            ? (int)localP.CustomProperties["Kills"] : 0;
+
+        localP.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
+        {
+            { "Kills", kills + 1 }
+        });
+
+        localP.AddScore(30);
+    }
+
+    [Rpc(SendTo.Owner)]
+    public void AddDeathClientRpc()
+    {
+        Photon.Realtime.Player localP = PhotonNetwork.LocalPlayer;
+        if (localP == null) return;
+
+        int deaths = localP.CustomProperties.ContainsKey("Deaths")
+            ? (int)localP.CustomProperties["Deaths"] : 0;
+
+        localP.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
+        {
+            { "Deaths", deaths + 1 }
+        });
+    }
     #endregion
 
     IEnumerator CookBombRoutine()
