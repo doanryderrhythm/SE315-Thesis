@@ -1,3 +1,9 @@
+using NUnit.Framework;
+using Photon.Pun;
+using Photon.Pun.UtilityScripts;
+using Photon.Realtime;
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,13 +21,15 @@ public class MatchResultUI : MonoBehaviour
 
     GameManager gameManager;
 
+    Photon.Realtime.Player[] players;
+    List<PlayerMatchData> playerDatas;
+
     void Start()
     {
         gameManager = GameManager.Instance;
 
         if (gameManager == null)
         {
-            Debug.LogError("GameManager not found!");
             return;
         }
 
@@ -36,18 +44,27 @@ public class MatchResultUI : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        gameManager.players.Sort((a, b) =>
-            b.totalScore.CompareTo(a.totalScore));
+        players = PhotonNetwork.PlayerList;
+        if (players == null || players.Length == 0)
+            return;
 
-        for (int i = 0; i < gameManager.players.Count; i++)
-        {
-            gameManager.players[i].rank = i + 1;
-        }
+        Array.Sort(players, (a, b) => b.GetScore().CompareTo(a.GetScore()));
 
-        for (int i = 0; i < gameManager.players.Count; i++)
+        playerDatas = new List<PlayerMatchData>();
+
+        for (int i = 0; i < players.Length; i++)
         {
-            PlayerMatchData player =
-                gameManager.players[i];
+            PlayerMatchData playerData = new PlayerMatchData();
+            playerData.playerName = players[i].NickName;
+            playerData.rank = i + 1;
+            playerData.totalScore = players[i].GetScore();
+            if (players[i].CustomProperties.ContainsKey("Kills"))
+                playerData.totalKills = (int)players[i].CustomProperties["Kills"];
+            if (players[i].CustomProperties.ContainsKey("Deaths"))
+                playerData.totalDeaths = (int)players[i].CustomProperties["Deaths"];
+            playerData.isLocalPlayer = players[i].IsLocal;
+
+            playerDatas.Add(playerData);
 
             GameObject row =
                 Instantiate(
@@ -55,37 +72,36 @@ public class MatchResultUI : MonoBehaviour
                     rowsContainer
                 );
 
-            bool isLocalPlayer =
-                player.isLocalPlayer;
+            bool isLocalPlayer = players[i].IsLocal;
 
             row.GetComponent<LeaderboardRowUI>()
-                .Setup(player, isLocalPlayer);
+                .Setup(playerData, isLocalPlayer);
         }
     }
 
     void SetupPodium()
     {
-        if (gameManager.players.Count > 0)
+        if (playerDatas.Count > 0)
         {
-            firstPlace.SetPlayer(gameManager.players[0]);
+            firstPlace.SetPlayer(playerDatas[0]);
         }
         else
         {
             firstPlace.gameObject.SetActive(false);
         }
 
-        if (gameManager.players.Count > 1)
+        if (playerDatas.Count > 1)
         {
-            secondPlace.SetPlayer(gameManager.players[1]);
+            secondPlace.SetPlayer(playerDatas[1]);
         }
         else
         {
             secondPlace.gameObject.SetActive(false);
         }
 
-        if (gameManager.players.Count > 2)
+        if (playerDatas.Count > 2)
         {
-            thirdPlace.SetPlayer(gameManager.players[2]);
+            thirdPlace.SetPlayer(playerDatas[2]);
         }
         else
         {
