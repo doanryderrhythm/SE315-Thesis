@@ -100,6 +100,12 @@ public class Player : NetworkBehaviour
 
     #endregion
 
+    public NetworkVariable<bool> isDead = new NetworkVariable<bool>(
+        false,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+
 
     public override void OnNetworkSpawn()
     {
@@ -108,7 +114,14 @@ public class Player : NetworkBehaviour
 
         if (IsOwner)
         {
-            PauseMenu.Instance.RegisterPlayerInput(playerInput);
+            if (PauseMenu.Instance != null)
+            {
+                PauseMenu.Instance.RegisterPlayerInput(playerInput);
+            }
+            else
+            {
+                Debug.LogWarning("PauseMenu.Instance is NULL");
+            }
         }
 
         if (!IsOwner)
@@ -120,6 +133,45 @@ public class Player : NetworkBehaviour
         transform.rotation = Quaternion.Euler(0, 0, randomAngle);
 
         currentAmmo = maxAmmo;
+
+        isDead.OnValueChanged += OnDeathStateChanged;
+        OnDeathStateChanged(false, isDead.Value);
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        isDead.OnValueChanged -= OnDeathStateChanged;
+    }
+
+    private void OnDeathStateChanged(bool oldVal, bool newVal)
+    {
+        // newVal is true if dead, false if alive
+
+        // Enable/disable visuals
+        var renderers = GetComponentsInChildren<Renderer>(true);
+        foreach (var r in renderers)
+        {
+            if (shieldObject != null && r.gameObject == shieldObject) continue;
+            r.enabled = !newVal;
+        }
+
+        // Enable/disable collisions
+        var colliders = GetComponentsInChildren<Collider2D>(true);
+        foreach (var c in colliders)
+        {
+            c.enabled = !newVal;
+        }
+
+        // Enable/disable player input and physics simulation
+        if (playerInput != null)
+        {
+            playerInput.enabled = IsOwner && !newVal;
+        }
+
+        if (rb != null)
+        {
+            rb.simulated = !newVal;
+        }
     }
 
     void FixedUpdate()
@@ -243,7 +295,7 @@ public class Player : NetworkBehaviour
 
         PlayExplosionClientRpc(transform.position);
 
-        GetComponent<NetworkObject>().Despawn();
+        isDead.Value = true;
     }
 
     #endregion
@@ -549,6 +601,36 @@ public class Player : NetworkBehaviour
         yield return new WaitForSeconds(shieldDuration);
 
         shieldObject.SetActive(false);
+    }
+
+    public void ResetPlayerState()
+    {
+        if (!IsServer) return;
+
+        isDead.Value = false;
+        currentAmmo = maxAmmo;
+        SetWeapon(WeaponType.Normal);
+        SetWeaponClientRpc(WeaponType.Normal);
+        isCookingBomb = false;
+        serverIsFiring = false;
+        currentCookTime = 0f;
+
+        if (cookingBombRoutine != null)
+        {
+            StopCoroutine(cookingBombRoutine);
+            cookingBombRoutine = null;
+        }
+
+        if (shieldCoroutine != null)
+        {
+            StopCoroutine(shieldCoroutine);
+            shieldCoroutine = null;
+        }
+
+        if (shieldObject != null)
+        {
+            shieldObject.SetActive(false);
+        }
     }
 
     #endregion
