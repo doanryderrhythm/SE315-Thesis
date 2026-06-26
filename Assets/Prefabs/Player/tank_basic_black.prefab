@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: -5963846901383554334}
   - component: {fileID: -8497413361643032097}
   - component: {fileID: -2967964759296910610}
+  - component: {fileID: -4556600190539419235}
   m_Layer: 3
   m_Name: tank_basic_black
   m_TagString: Player
@@ -638,6 +639,23 @@ MonoBehaviour:
   UseRigidBodyForMotion: 0
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
+--- !u!114 &-4556600190539419235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000833922525642786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d0be26d6c8d5964d9775fd2a1e965c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TankSkinLoader
+  ShowTopMostFoldoutHeaderGroup: 1
+  baseRenderer: {fileID: 1000833922525642784}
+  turretRenderer: {fileID: 1000833921802350933}
+  baseAnimator: {fileID: 1000833922525642787}
+  skinLibrary: {fileID: 11400000, guid: 1a4bbc3049cdae2488ab0ddb6e0a56db, type: 2}
 --- !u!1 &5365503902083070280
 GameObject:
   m_ObjectHideFlags: 0

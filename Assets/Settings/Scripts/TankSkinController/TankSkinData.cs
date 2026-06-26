@@ -8,9 +8,10 @@ public class TankSkinLibrary : ScriptableObject
 }
 
 [System.Serializable]
-public class TankSkin
+public struct TankSkin
 {
     public string skinName;
     public Sprite baseSprite;
     public Sprite turretSprite;
+    public RuntimeAnimatorController baseAnimator;
 }
