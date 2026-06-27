@@ -31,4 +31,9 @@ public class OnlinePlayerManagement : MonoBehaviourPunCallbacks
             buttons.SetActive(false);
         }
     }
+
+    public override void OnLeftRoom() //safe disconnect from room
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+    }
 }
