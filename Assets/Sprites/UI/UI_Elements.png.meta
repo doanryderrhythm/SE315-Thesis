@@ -43,9 +43,9 @@ TextureImporter:
     filterMode: 0
     aniso: 1
     mipBias: 0
-    wrapU: 1
-    wrapV: 1
-    wrapW: 1
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -212,6 +212,28 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: UI_Elements_Arrow
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af6dc25efba82a54e944f0844cf2b241
+      internalID: -1827497713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -231,6 +253,7 @@ TextureImporter:
         value: True
     nameFileIdTable:
       UI_Elements_1: -2251538127485611388
+      UI_Elements_Arrow: -1827497713
       UI_Elements_Button: -7663377620997365329
       UI_Elements_Picker: 1450721685
       UI_Elements_Return: 61787669

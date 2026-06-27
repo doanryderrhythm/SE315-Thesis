@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class PauseMenu : MonoBehaviour
     public static bool isGamePaused = false;
     private float duration = 0.25f;
     private PlayerInput playerInput;
+
+    [SerializeField] private Button pauseBtn;
 
     [Header("Canvas Groups")]
     [SerializeField] private CanvasGroup pauseMenuCG;
@@ -54,9 +57,13 @@ public class PauseMenu : MonoBehaviour
         }
     }
     
-    private void Pause()
+    public void Pause()
     {
         isGamePaused = true;
+        if (pauseBtn)
+        {
+            pauseBtn.interactable = false;
+        }
 
         if (SceneManager.GetActiveScene().name == "Practice Room")
         {
@@ -109,6 +116,11 @@ public class PauseMenu : MonoBehaviour
     {
         isGamePaused = false;
         Time.timeScale = 1f;
+
+        if (pauseBtn)
+        {
+            pauseBtn.interactable = true;
+        }
 
         if(playerInput != null)
         {

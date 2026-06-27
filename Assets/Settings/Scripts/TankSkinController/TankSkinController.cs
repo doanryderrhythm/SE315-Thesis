@@ -13,7 +13,7 @@ public class TankSkinController : MonoBehaviour
 
     void Awake() 
     {
-        currentSkinIndex = PlayerPrefs.GetInt("SelectedSkin", 0);
+        currentSkinIndex = PlayerPrefs.GetInt("SelectedSkinIndex", 0);
         ApplySkin(currentSkinIndex);
     }
 
