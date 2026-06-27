@@ -103,6 +103,7 @@ public class Bullet : NetworkBehaviour
                 }
 
                 p.Die();
+                ArenaManager.OnPlayerDead.Invoke();
             }
 
 

@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -66,17 +67,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        // Restart game (debug)
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            RestartMatch();
-        }
-
-        // TEMP: next map (debug)
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            EndCurrentRound();
-        }
+        
     }
 
     // ========================
@@ -118,12 +109,14 @@ public class GameManager : MonoBehaviourPunCallbacks
     // ========================
     // ROUND FLOW
     // ========================
-    public void EndCurrentRound()
+    public async void EndCurrentRound()
     {
         Debug.Log("Round finished");
 
         if (!PhotonNetwork.IsMasterClient)
             return;
+
+        await Task.Delay(1500);
 
         if (currentMap != null)
         {

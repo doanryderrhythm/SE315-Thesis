@@ -3,12 +3,25 @@ using System.Threading;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ArenaManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] PlayerSpawner playerSpawner;
 
     private CancellationTokenSource _cts;
+
+    public static UnityEvent OnPlayerDead = new UnityEvent();
+
+    public override void OnEnable()
+    {
+        OnPlayerDead.AddListener(CheckPlayers);
+    }
+
+    public override void OnDisable()
+    {
+        OnPlayerDead.RemoveListener(CheckPlayers);
+    }
 
     async void Start()
     {
@@ -47,5 +60,23 @@ public class ArenaManager : MonoBehaviourPunCallbacks
         }
 
         playerSpawner.SpawnPlayersForNewRound();
+    }
+
+    public void CheckPlayers()
+    {
+        var clients = NetworkManager.Singleton.ConnectedClientsList;
+
+        int numberOfSurvivedClients = 0;
+        foreach (var client in clients)
+        {
+            if (client.PlayerObject == null)
+                continue;
+
+            if (client.PlayerObject.GetComponent<Player>().isDead.Value == false)
+                numberOfSurvivedClients += 1;
+        }
+
+        if (numberOfSurvivedClients <= 1)
+            GameManager.Instance.EndCurrentRound();
     }
 }
