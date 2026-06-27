@@ -5,6 +5,7 @@ using Photon.Realtime;
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -116,6 +117,18 @@ public class MatchResultUI : MonoBehaviour
 
     public void OnLeaveMatch()
     {
-        SceneManager.LoadScene("MainMenu");
+        if (PhotonNetwork.InRoom)
+            PhotonNetwork.LeaveRoom();
+
+        if (NetworkManager.Singleton != null &&
+            NetworkManager.Singleton.IsListening)
+        {
+            NetworkManager.Singleton.Shutdown();
+        }
+
+        if (GameManager.Instance)
+            Destroy(GameManager.Instance.gameObject);
+
+        SceneManager.LoadScene("Main Menu");
     }
 }
