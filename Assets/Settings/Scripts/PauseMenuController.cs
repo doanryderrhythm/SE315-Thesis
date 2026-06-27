@@ -1,8 +1,10 @@
+using Photon.Pun;
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -93,6 +95,19 @@ public class PauseMenu : MonoBehaviour
     public void ReturnToTitle()
     {
         Time.timeScale = 1f;
+
+        if (PhotonNetwork.InRoom)
+            PhotonNetwork.LeaveRoom();
+
+        if (NetworkManager.Singleton != null &&
+            NetworkManager.Singleton.IsListening)
+        {
+            NetworkManager.Singleton.Shutdown();
+        }
+
+        if (GameManager.Instance)
+            Destroy(GameManager.Instance.gameObject);
+
         SceneManager.LoadScene(0);
     }
 
