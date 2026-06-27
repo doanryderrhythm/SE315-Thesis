@@ -16,16 +16,9 @@ public class RoundResultUI : MonoBehaviour
 
     [Header("Personal Summary")]
     public TMP_Text rankOldText;
-    public TMP_Text rankNewText;
-
     public TMP_Text scoreValueText;
-    public TMP_Text scoreGainText;
-
     public TMP_Text killsValueText;
-    public TMP_Text killsGainText;
-
     public TMP_Text deathsValueText;
-    public TMP_Text deathsGainText;
 
     [Header("Leaderboard")]
     public Transform rowsContainer;
@@ -34,6 +27,7 @@ public class RoundResultUI : MonoBehaviour
     float timer = 6f;
 
     GameManager gameManager;
+    private PlayerMatchData localPlayerData;
 
     void Start()
     {
@@ -41,8 +35,8 @@ public class RoundResultUI : MonoBehaviour
         if (gameManager == null)
             return;
 
-        LoadUI();
         GenerateLeaderboard();
+        LoadUI();
         StartCoroutine(CountdownRoutine());
     }
 
@@ -75,44 +69,10 @@ public class RoundResultUI : MonoBehaviour
                 + ")";
         }
 
-        /*
-        PlayerMatchData localPlayer =
-            gameManager.players[0];
-
-        scoreValueText.text =
-            localPlayer.totalScore.ToString();
-
-        scoreGainText.text =
-            " + " + localPlayer.gainedScore;
-
-        killsValueText.text =
-            localPlayer.totalKills.ToString();
-
-        killsGainText.text =
-            " + " + localPlayer.gainedKills;
-
-        deathsValueText.text =
-            localPlayer.totalDeaths.ToString();
-
-        deathsGainText.text =
-            " + " + localPlayer.gainedDeaths;
-
-        rankOldText.text =
-            localPlayer.previousRank.ToString();
-
-        rankNewText.text =
-            " ->" + localPlayer.rank.ToString();
-
-        bool changed =
-            localPlayer.previousRank != localPlayer.rank;
-
-        rankNewText.gameObject.SetActive(changed);
-
-        if (!changed)
-        {
-            rankOldText.gameObject.SetActive(false);
-        }
-        */
+        scoreValueText.text = localPlayerData.totalScore.ToString();
+        killsValueText.text = localPlayerData.totalKills.ToString();
+        deathsValueText.text = localPlayerData.totalDeaths.ToString();
+        rankOldText.text = localPlayerData.rank.ToString();
     }
 
     void GenerateLeaderboard()
@@ -146,6 +106,8 @@ public class RoundResultUI : MonoBehaviour
                 );
 
             bool isLocalPlayer = players[i].IsLocal;
+            if (isLocalPlayer)
+                localPlayerData = playerData;
 
             row.GetComponent<LeaderboardRowUI>()
                 .Setup(playerData, isLocalPlayer);
