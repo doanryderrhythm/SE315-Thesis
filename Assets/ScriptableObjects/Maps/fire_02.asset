@@ -15,4 +15,4 @@ MonoBehaviour:
   mapName: Fire 2
   previewImage: {fileID: 8091981526066810400, guid: ec346abeb0c8b9c4fbbe4b57c3a90449, type: 3}
   mapPrefab: {fileID: 3537625487723467887, guid: 3017c727ba372c04bb6ff98aaaa01ad3, type: 3}
-  type: 0
+  type: 2

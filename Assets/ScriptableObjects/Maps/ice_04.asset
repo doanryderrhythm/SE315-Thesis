@@ -15,4 +15,4 @@ MonoBehaviour:
   mapName: Ice 4
   previewImage: {fileID: 6139756214849210613, guid: 4573483ce9725cc43930feebec97f6ba, type: 3}
   mapPrefab: {fileID: 5167382520380837161, guid: d0ef9c6e5a415c64aa1625d4862105bf, type: 3}
-  type: 0
+  type: 1

@@ -15,4 +15,4 @@ MonoBehaviour:
   mapName: Jungle 1
   previewImage: {fileID: -4770570624914503950, guid: e2f53e58d02f9ca4fa802c603641bf19, type: 3}
   mapPrefab: {fileID: 1892936611323855134, guid: 25fa6d52a5166734184e0cf41167554a, type: 3}
-  type: 0
+  type: 3
