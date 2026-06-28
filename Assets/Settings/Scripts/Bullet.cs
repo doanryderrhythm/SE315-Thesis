@@ -94,18 +94,11 @@ public class Bullet : NetworkBehaviour
             {
                 if (p != owner)
                 {
-                    p.AddDeathClientRpc();
                     owner.AddKillClientRpc();
-                }
-                else
-                {
-                    p.AddDeathClientRpc();
                 }
 
                 p.Die();
-                ArenaManager.OnPlayerDead.Invoke();
             }
-
 
             DestroyBullet();
             return;

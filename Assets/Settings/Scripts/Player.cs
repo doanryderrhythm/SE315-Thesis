@@ -310,6 +310,9 @@ public class Player : NetworkBehaviour
         PlayExplosionClientRpc(transform.position);
 
         isDead.Value = true;
+
+        AddDeathClientRpc();
+        ArenaManager.OnPlayerDead.Invoke();
     }
 
     #endregion
