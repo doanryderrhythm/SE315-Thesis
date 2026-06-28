@@ -251,7 +251,7 @@ public class Player : NetworkBehaviour
 
                 ShootBombServerRpc(currentCookTime);
 
-                currentWeapon = WeaponType.Normal;
+                SetWeapon(WeaponType.Normal);
                 return;
             }
 
@@ -259,7 +259,7 @@ public class Player : NetworkBehaviour
             {
                 StopGatlingServerRpc();
 
-                currentWeapon = WeaponType.Normal;
+                SetWeapon(WeaponType.Normal);
 
                 return;
             }
@@ -365,7 +365,7 @@ public class Player : NetworkBehaviour
             yield return new WaitForSeconds(0.05f);
         }
 
-        currentWeapon = WeaponType.Normal;
+        SetWeapon(WeaponType.Normal);
     }
 
     [Rpc(SendTo.Server)]
@@ -573,7 +573,8 @@ public class Player : NetworkBehaviour
 
         PlaySoundClientRpc("explosion");
         Die();
-        currentWeapon = WeaponType.Normal;
+
+        SetWeapon(WeaponType.Normal);
     }
 
     void PlaceMine()
@@ -714,7 +715,6 @@ public class Player : NetworkBehaviour
             {
                 ExplodeBombInHandServerRpc();
 
-                currentWeapon = WeaponType.Normal;
                 isCookingBomb = false;
                 yield break;
             }
