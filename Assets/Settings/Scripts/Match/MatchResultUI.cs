@@ -118,7 +118,9 @@ public class MatchResultUI : MonoBehaviour
     public void OnLeaveMatch()
     {
         if (PhotonNetwork.InRoom)
+        {
             PhotonNetwork.LeaveRoom();
+        }
 
         if (NetworkManager.Singleton != null &&
             NetworkManager.Singleton.IsListening)
@@ -128,6 +130,9 @@ public class MatchResultUI : MonoBehaviour
 
         if (GameManager.Instance)
             Destroy(GameManager.Instance.gameObject);
+
+        GameSettings.selectedMaps.Clear();
+        GameSettings.selectedMapsThemeTrack = null;
 
         SceneManager.LoadScene("Main Menu");
     }

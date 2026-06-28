@@ -121,8 +121,8 @@ public class MapSelectionUIManager : MonoBehaviour
     public void OnMapSelected(MapGroup data)
     {
 
-            if (bigPreviewImage != null)
-            bigPreviewImage.sprite = data.previewImage;
+        if (bigPreviewImage != null)
+        bigPreviewImage.sprite = data.previewImage;
 
         if (bigMapNameText != null)
             bigMapNameText.text = data.groupName;
@@ -221,6 +221,7 @@ public class MapSelectionUIManager : MonoBehaviour
 
         if (selectedGroup != null)
         {
+            GameSettings.selectedMapsThemeTrack = selectedGroup.themeTrackName;
             // chọn biome cụ thể
             selectedMaps = selectedGroup.maps
                 .OrderBy(x => Random.value)
@@ -241,10 +242,13 @@ public class MapSelectionUIManager : MonoBehaviour
 
                 selectedMaps.Add(randomMap);
             }
+
+            GameSettings.selectedMapsThemeTrack = "Shadows in Combat";
         }
 
         // 🔥 truyền sang GameManager
         GameSettings.selectedMaps = selectedMaps;
+
 
         string[] mapNames = selectedMaps.Select(m => m.mapName).ToArray();
         string serializedMaps = string.Join(",", mapNames);

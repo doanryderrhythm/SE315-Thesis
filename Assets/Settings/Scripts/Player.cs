@@ -45,9 +45,6 @@ public class Player : NetworkBehaviour
     private Coroutine cookingBombRoutine;
     private float currentCookTime = 0f;
 
-    [Header("Bomb Audio")]
-    [SerializeField] private AudioSource cookTickAudio;
-
     private float nextCookTickTime = 0f;
 
     #endregion
@@ -202,6 +199,16 @@ public class Player : NetworkBehaviour
         if (!IsOwner) return;
 
         moveInput = context.ReadValue<Vector2>();
+
+        if (context.started)
+        {
+            AudioManager.Instance.Sound.PlayLoop("tank_move");
+        }
+        
+        if (context.canceled)
+        {
+            AudioManager.Instance.Sound.StopLoop();
+        }
     }
 
     public void OnAttack(InputAction.CallbackContext context)
@@ -253,6 +260,7 @@ public class Player : NetworkBehaviour
                 StopGatlingServerRpc();
 
                 currentWeapon = WeaponType.Normal;
+
                 return;
             }
         }
@@ -289,6 +297,8 @@ public class Player : NetworkBehaviour
                 Quaternion.identity
             );
 
+            PlaySoundClientRpc("explosion");
+
             Destroy(effect, 2f);
         }
     }
@@ -319,12 +329,12 @@ public class Player : NetworkBehaviour
 
             case WeaponType.Laser:
                 ShootLaserServerRpc();
-                currentWeapon = WeaponType.Normal;
+                SetWeapon(WeaponType.Normal);
                 break;
 
             case WeaponType.Mine:
                 PlaceMineServerRpc();
-                currentWeapon = WeaponType.Normal;
+                SetWeapon(WeaponType.Normal);
                 break;
 
             case WeaponType.Bomb:
@@ -346,6 +356,8 @@ public class Player : NetworkBehaviour
             Vector2 dir = Quaternion.Euler(0, 0, spread) * firePoint.right;
 
             SpawnBullet(dir, 0.6f, gatlingBulletSpeed);
+            float pitch = UnityEngine.Random.Range(0.9f, 1f);
+            PlaySoundClientRpc("tank_shoot", pitch);
 
             yield return new WaitForSeconds(0.05f);
         }
@@ -362,6 +374,8 @@ public class Player : NetworkBehaviour
         currentAmmo--;
 
         SpawnBullet(firePoint.right);
+
+        PlaySoundClientRpc("tank_shoot");
     }
 
     [Rpc(SendTo.Server)]
@@ -382,6 +396,7 @@ public class Player : NetworkBehaviour
     void ShootLaserServerRpc()
     {
         ShootLaser();
+        PlaySoundClientRpc("tank_shoot", 2.5f);
     }
 
     [Rpc(SendTo.Owner)]
@@ -525,6 +540,8 @@ public class Player : NetworkBehaviour
     void ShootBombServerRpc(float cookedTime)
     {
         ShootBomb(cookedTime);
+
+        PlaySoundClientRpc("tank_shoot", 0.5f);
     }
 
     [Rpc(SendTo.Server)]
@@ -551,6 +568,7 @@ public class Player : NetworkBehaviour
             b.ForceExplode();
         }
 
+        PlaySoundClientRpc("explosion");
         Die();
         currentWeapon = WeaponType.Normal;
     }
@@ -586,6 +604,12 @@ public class Player : NetworkBehaviour
     public void SetWeapon(WeaponType newWeapon)
     {
         currentWeapon = newWeapon;
+
+        TankSkinLoader tankSkinLoader = GetComponent<TankSkinLoader>();
+        if(tankSkinLoader != null)
+        {
+            tankSkinLoader.SetWeaponTypeServerRpc(newWeapon);
+        }
     }
 
     public void ActivateShield()
@@ -702,10 +726,7 @@ public class Player : NetworkBehaviour
 
                 if (Time.time >= nextCookTickTime)
                 {
-                    if (cookTickAudio != null)
-                    {
-                        cookTickAudio.PlayOneShot(cookTickAudio.clip);
-                    }
+                    PlaySoundClientRpc("bomb_tick");
 
                     nextCookTickTime = Time.time + tickInterval;
                 }
@@ -713,5 +734,11 @@ public class Player : NetworkBehaviour
 
             yield return null;
         }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlaySoundClientRpc(string soundName, float pitch = 1f)
+    {
+        AudioManager.Instance.Sound.PlaySound2D(soundName, pitch);
     }
 }

@@ -10,6 +10,7 @@ public class SelectionScreen : MonoBehaviour
     private void Start()
     {
         usernameInputField.text = PlayerPrefs.GetString("Username", "Player");
+        PhotonNetwork.NickName = usernameInputField.text;
     }
 
     public void Back()

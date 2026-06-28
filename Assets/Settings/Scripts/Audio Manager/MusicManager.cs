@@ -12,6 +12,12 @@ public class MusicManager : MonoBehaviour
     {
         AudioClip nextMusic = musicLibrary.GetClipFromName(name);
         
+        if(!nextMusic)
+        {
+            Debug.LogWarning("Music track not found: " + name);
+            return;
+        }
+
         if (nextMusic == musicSource.clip && musicSource.isPlaying)
         {
             return;
@@ -22,35 +28,10 @@ public class MusicManager : MonoBehaviour
             StopCoroutine(musicFadeCoroutine);
         }
 
-        musicFadeCoroutine = StartCoroutine(MusicCrossFade(musicLibrary.GetClipFromName(name), fadeDuration));
+        musicFadeCoroutine = StartCoroutine(MusicCrossFade(nextMusic, fadeDuration));
     }
 
-    public void PlaySceneMusic(int sceneNumber) //temp =))
-    {
-        if (sceneNumber < 0 || sceneNumber >= musicLibrary.tracks.Length)
-        {
-            Debug.LogWarning("Scene index out of range.");
-            return;
-        }
-
-        string name = sceneNumber switch
-        {
-            0 => "Shadows in Combat",
-            1 => "Shadows in Combat",
-            2 => "Blazing Blades",
-            3 => "Havoc Protocol",
-            4 => "High Velocity",
-            5 => "Shadows in Combat",
-            _ => null
-        };
-
-        if (name != null)
-        {
-            PlayMusic(name);
-        }
-    }
-
-    IEnumerator MusicCrossFade(AudioClip nextTrack, float fadeDuration = 0.5f)
+    IEnumerator MusicCrossFade(AudioClip nextTrack, float fadeDuration = 5f)
     {
         float percent = 0f;
         float startVolume = musicSource.volume;

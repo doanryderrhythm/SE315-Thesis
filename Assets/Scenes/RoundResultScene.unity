@@ -206,7 +206,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3082861872291999514, guid: 6905b55bae265cc49a525a59747af016, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 26.33
+      value: 26.34
       objectReference: {fileID: 0}
     - target: {fileID: 3082861872291999514, guid: 6905b55bae265cc49a525a59747af016, type: 3}
       propertyPath: m_SizeDelta.y
@@ -214,7 +214,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3082861872291999514, guid: 6905b55bae265cc49a525a59747af016, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 13.165
+      value: 13.17
       objectReference: {fileID: 0}
     - target: {fileID: 3082861872291999514, guid: 6905b55bae265cc49a525a59747af016, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -604,12 +604,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22
+  m_fontSize: 20
   m_fontSizeBase: 22
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 10
+  m_fontSizeMax: 20
   m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -2008,12 +2008,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22
+  m_fontSize: 20
   m_fontSizeBase: 22
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 10
+  m_fontSizeMax: 20
   m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -2762,12 +2762,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22
+  m_fontSize: 20
   m_fontSizeBase: 22
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 10
+  m_fontSizeMax: 20
   m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -2867,13 +2867,9 @@ MonoBehaviour:
   mapInfoText: {fileID: 320071147}
   countdownText: {fileID: 288685233}
   rankOldText: {fileID: 651360792}
-  rankNewText: {fileID: 0}
   scoreValueText: {fileID: 2113968382}
-  scoreGainText: {fileID: 0}
   killsValueText: {fileID: 1389668264}
-  killsGainText: {fileID: 0}
   deathsValueText: {fileID: 1995793529}
-  deathsGainText: {fileID: 0}
   rowsContainer: {fileID: 855962843}
   leaderboardRowPrefab: {fileID: 31588601660836527, guid: 25e2c4954ea46ec4e950d2ad28a1a5a1, type: 3}
 --- !u!4 &1097362182
@@ -3013,12 +3009,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22
+  m_fontSize: 20
   m_fontSizeBase: 22
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 10
+  m_fontSizeMax: 20
   m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -3361,12 +3357,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22
+  m_fontSize: 20
   m_fontSizeBase: 22
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 10
+  m_fontSizeMax: 20
   m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -3726,7 +3722,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3082861872291999514, guid: 6905b55bae265cc49a525a59747af016, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 89.53
+      value: 88.34
       objectReference: {fileID: 0}
     - target: {fileID: 3082861872291999514, guid: 6905b55bae265cc49a525a59747af016, type: 3}
       propertyPath: m_SizeDelta.y
@@ -3734,7 +3730,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3082861872291999514, guid: 6905b55bae265cc49a525a59747af016, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 44.765
+      value: 44.17
       objectReference: {fileID: 0}
     - target: {fileID: 3082861872291999514, guid: 6905b55bae265cc49a525a59747af016, type: 3}
       propertyPath: m_AnchoredPosition.y

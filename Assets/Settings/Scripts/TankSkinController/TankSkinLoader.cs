@@ -9,14 +9,18 @@ public class TankSkinLoader : NetworkBehaviour
     [SerializeField] private Animator baseAnimator;
 
     [SerializeField] private TankSkinLibrary skinLibrary;
+    [SerializeField] private TurretSkinLibrary turretSkinLibrary;
 
     private NetworkVariable<int> networkSkinIndex = new NetworkVariable<int>(
         0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<Color> networkTankColor = new NetworkVariable<Color>(
         Color.white, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<WeaponType> networkWeaponType = new NetworkVariable<WeaponType>(
+        WeaponType.Normal, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private bool _skinDirty = false;
     private bool _colorDirty = false;
+    private bool _weaponDirty = false;
 
     private void Awake()
     {
@@ -26,10 +30,9 @@ public class TankSkinLoader : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        base.OnNetworkSpawn();
-
         networkSkinIndex.OnValueChanged += OnSkinChanged;
         networkTankColor.OnValueChanged += OnColorChanged;
+        networkWeaponType.OnValueChanged += OnWeaponChanged;
 
         if (IsOwner)
         {
@@ -41,11 +44,11 @@ public class TankSkinLoader : NetworkBehaviour
             Color savedColor = new Color(r, g, b);
 
             SetTankSkinServerRpc(skinIndex, savedColor);
-            ApplySkin(skinIndex, savedColor);
+            ApplySkin(skinIndex, savedColor, WeaponType.Normal);
         }
         else
         {
-            ApplySkin(networkSkinIndex.Value, networkTankColor.Value);
+            ApplySkin(networkSkinIndex.Value, networkTankColor.Value, networkWeaponType.Value);
         }
     }
 
@@ -53,7 +56,7 @@ public class TankSkinLoader : NetworkBehaviour
     {
         networkSkinIndex.OnValueChanged -= OnSkinChanged;
         networkTankColor.OnValueChanged -= OnColorChanged;
-        base.OnNetworkDespawn();
+        networkWeaponType.OnValueChanged -= OnWeaponChanged;
     }
 
     private void OnSkinChanged(int oldSkin, int newSkin)
@@ -66,17 +69,23 @@ public class TankSkinLoader : NetworkBehaviour
         _colorDirty = true;
     }
 
+    private void OnWeaponChanged(WeaponType oldWeapon, WeaponType newWeapon)
+    {
+        _weaponDirty = true;
+    }
+
     private void LateUpdate()
     {
-        if (_skinDirty || _colorDirty)
+        if (_skinDirty || _colorDirty || _weaponDirty)
         {
-            ApplySkin(networkSkinIndex.Value, networkTankColor.Value);
+            ApplySkin(networkSkinIndex.Value, networkTankColor.Value, networkWeaponType.Value);
             _skinDirty = false;
             _colorDirty = false;
+            _weaponDirty = false;
         }
     }
 
-    private void ApplySkin(int skinIndex, Color color)
+    private void ApplySkin(int skinIndex, Color color, WeaponType weapon)
     {
         if (skinLibrary == null || skinLibrary.allSkins.Count == 0) return;
         
@@ -89,7 +98,14 @@ public class TankSkinLoader : NetworkBehaviour
         }
         if (turretRenderer)
         {
-            turretRenderer.sprite = skin.turretSprite;
+            if(weapon == WeaponType.Gatling || weapon == WeaponType.Laser)
+            {
+                turretRenderer.sprite = turretSkinLibrary.allTurrets.Find(t => t.turretName == weapon.ToString()).turretSprite;
+            }
+            else
+            {
+                turretRenderer.sprite = skin.turretSprite;
+            }
             turretRenderer.color = color;
         }
 
@@ -114,5 +130,11 @@ public class TankSkinLoader : NetworkBehaviour
     {
         networkSkinIndex.Value = skinIndex;
         networkTankColor.Value = color;
+    }
+
+    [Rpc(SendTo.Server)]
+    public void SetWeaponTypeServerRpc(WeaponType weaponType)
+    {
+        networkWeaponType.Value = weaponType;
     }
 }

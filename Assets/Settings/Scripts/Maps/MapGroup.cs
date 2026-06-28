@@ -16,4 +16,6 @@ public class MapGroup : ScriptableObject
     public List<MapData> maps;        // DANH SÁCH map nhỏ
 
     public int MaxRounds => maps.Count;
+
+    public string themeTrackName;
 }

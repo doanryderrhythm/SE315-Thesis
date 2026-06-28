@@ -111,7 +111,7 @@ public class PauseMenu : MonoBehaviour
         }
         else //if playing local
         {
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene("Main Menu");
         }
     }
 

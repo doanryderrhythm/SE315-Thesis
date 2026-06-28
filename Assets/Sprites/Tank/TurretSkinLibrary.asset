@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 178c879a5bcd27c4ca3f3ad683c4b627, type: 3}
+  m_Name: TurretSkinLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::TurretSkinLibrary
+  allTurrets:
+  - turretName: Gatling
+    turretSprite: {fileID: -3931436125530310972, guid: 0a6c9dd66bc4ab74ea65f46b13da0c8e, type: 3}
+  - turretName: Laser
+    turretSprite: {fileID: -8588234056260022142, guid: 557786b2e02f4a24d8d024697dbb60a1, type: 3}
