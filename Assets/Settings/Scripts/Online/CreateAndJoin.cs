@@ -19,12 +19,23 @@ public class CreateAndJoin : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        PhotonNetwork.CreateRoom(roomNameInputField.text, new RoomOptions()
+        if (PhotonNetwork.IsConnectedAndReady)
         {
-            MaxPlayers = 4,
-            IsVisible = true,
-            IsOpen = true
-        }, TypedLobby.Default, null);
+            PhotonNetwork.CreateRoom(roomNameInputField.text, new RoomOptions()
+            {
+                MaxPlayers = 4,
+                IsVisible = true,
+                IsOpen = true
+            }, TypedLobby.Default, null);
+
+            return;
+        }
+
+        if (!PhotonNetwork.IsConnected || PhotonNetwork.NetworkClientState == ClientState.ConnectedToNameServer)
+        {
+            Debug.LogWarning($"Photon was on the {PhotonNetwork.NetworkClientState}. Connecting to Master server...");
+            PhotonNetwork.ConnectUsingSettings();
+        }
     }
 
     public void JoinRoom(string roomId)

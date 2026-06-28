@@ -3,6 +3,7 @@ using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
@@ -12,6 +13,8 @@ public class PauseMenu : MonoBehaviour
     public static bool isGamePaused = false;
     private float duration = 0.25f;
     private PlayerInput playerInput;
+
+    [SerializeField] private Button pauseBtn;
 
     [Header("Canvas Groups")]
     [SerializeField] private CanvasGroup pauseMenuCG;
@@ -56,9 +59,13 @@ public class PauseMenu : MonoBehaviour
         }
     }
     
-    private void Pause()
+    public void Pause()
     {
         isGamePaused = true;
+        if (pauseBtn)
+        {
+            pauseBtn.interactable = false;
+        }
 
         if (SceneManager.GetActiveScene().name == "Practice Room")
         {
@@ -89,9 +96,6 @@ public class PauseMenu : MonoBehaviour
     {
         Time.timeScale = 1f;
 
-        if (PhotonNetwork.InRoom)
-            PhotonNetwork.LeaveRoom();
-
         if (NetworkManager.Singleton != null &&
             NetworkManager.Singleton.IsListening)
         {
@@ -101,7 +105,14 @@ public class PauseMenu : MonoBehaviour
         if (GameManager.Instance)
             Destroy(GameManager.Instance.gameObject);
 
-        SceneManager.LoadScene(0);
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.LeaveRoom();
+        }
+        else //if playing local
+        {
+            SceneManager.LoadScene("Main Menu");
+        }
     }
 
     private void SwitchMenu(CanvasGroup toShow, CanvasGroup toHide, Animator anim, string trigger)
@@ -124,6 +135,11 @@ public class PauseMenu : MonoBehaviour
     {
         isGamePaused = false;
         Time.timeScale = 1f;
+
+        if (pauseBtn)
+        {
+            pauseBtn.interactable = true;
+        }
 
         if(playerInput != null)
         {

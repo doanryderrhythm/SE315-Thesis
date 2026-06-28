@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -6,9 +7,11 @@ public class SoundManager : MonoBehaviour
 {
     [SerializeField] private SoundLibrary sfxLibrary;
     [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioSource loopSource;
 
-    private const string hoverSound = "UI_Hover";
-    private const string clickSound = "UI_Click";
+    private float maxLoopVolume = 0.5f;
+
+    private Coroutine sfxFadeCoroutine;
 
     private void Awake()
     {
@@ -28,18 +31,57 @@ public class SoundManager : MonoBehaviour
         PlaySound3D(sfxLibrary.GetClipFromName(name), position);
     }
 
-    public void PlaySound2D(string name)
+    public void PlaySound2D(string name, float pitch = 1f)
     {
-        if (name == hoverSound || name == clickSound)
+        if (name == "UI_Hover" || name == "UI_Click")
         {
             sfxSource.pitch = Random.Range(0.95f, 1.05f);
         }
         else
         {
-            sfxSource.pitch = 1f;
+            sfxSource.pitch = pitch;
         }
 
         sfxSource.PlayOneShot(sfxLibrary.GetClipFromName(name));
+    }
+
+    public void PlayLoop(string name, float pitch = 1f)
+    {
+        AudioClip newClip = sfxLibrary.GetClipFromName(name);
+
+        if (loopSource.isPlaying && loopSource.clip == newClip) return;
+
+        if (sfxFadeCoroutine != null) StopCoroutine(sfxFadeCoroutine);
+
+        loopSource.clip = newClip;
+        loopSource.pitch = pitch;
+        loopSource.loop = true;
+        loopSource.volume = 0f;
+        loopSource.Play();
+
+        sfxFadeCoroutine = StartCoroutine(Fade(0f, maxLoopVolume));
+    }
+
+    public void StopLoop()
+    {
+        if(sfxFadeCoroutine != null) StopCoroutine(sfxFadeCoroutine);
+        sfxFadeCoroutine = StartCoroutine(Fade(maxLoopVolume, 0f));
+    }
+
+    private IEnumerator Fade(float from, float to, float fadeDuration = 0.5f)
+    {
+        float percent = 0f;
+        while (percent < 1f)
+        {
+            percent += Time.unscaledDeltaTime / fadeDuration;
+            loopSource.volume = Mathf.Lerp(from, to, percent);
+            yield return null;
+        }
+
+        if (loopSource.volume < 0.1f)
+        {
+            loopSource.Stop();
+        }
     }
 
     #region UI Sound Management
@@ -60,17 +102,11 @@ public class SoundManager : MonoBehaviour
     }
     public void PlayHoverSound()
     {
-        if (hoverSound != null)
-        {
-            PlaySound2D(hoverSound);
-        }
+        PlaySound2D("UI_Hover");
     }
     public void PlayClickSound()
     {
-        if (clickSound != null)
-        {
-            PlaySound2D(clickSound);
-        }
+        PlaySound2D("UI_Click");
     }
     #endregion
 }

@@ -7,6 +7,11 @@ public class MainMenu : MonoBehaviour
     private void Start()
     {
         PhotonNetwork.Disconnect();
+
+        if(SceneManager.GetActiveScene().name == "Scene_0")
+        {
+            SceneManager.LoadScene("Main Menu");
+        }
     }
     public void PlayGame()
     {

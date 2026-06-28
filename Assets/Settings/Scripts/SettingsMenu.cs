@@ -12,9 +12,11 @@ public class SettingMenu : MonoBehaviour
     [SerializeField] Slider masterSlider;
     [SerializeField] Slider SFXSlider;
     [SerializeField] Slider BGMSlider;
+    [SerializeField] Toggle fullscreenToggle;
 
     private void Start()
     {
+        #region Resolution
         resolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
 
@@ -39,6 +41,15 @@ public class SettingMenu : MonoBehaviour
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
 
+        if (fullscreenToggle)
+        {
+            bool isFullScreen = PlayerPrefs.GetInt("Fullscreen", 1) == 1;
+            fullscreenToggle.SetIsOnWithoutNotify(isFullScreen);
+            SetFullScreen(isFullScreen);
+        }
+        #endregion
+
+        #region Volume
         masterSlider.value = PlayerPrefs.GetFloat("Master", 1f);
         SFXSlider.value = PlayerPrefs.GetFloat("SFX", 1f);
         BGMSlider.value = PlayerPrefs.GetFloat("BGM", 1f);
@@ -46,6 +57,7 @@ public class SettingMenu : MonoBehaviour
         masterSlider.onValueChanged.AddListener(v => AudioManager.Instance.SetVolume("Master", v));
         SFXSlider.onValueChanged.AddListener(v => AudioManager.Instance.SetVolume("SFX", v));
         BGMSlider.onValueChanged.AddListener(v => AudioManager.Instance.SetVolume("BGM", v));
+        #endregion
     }
     public void SetResolution(int resolutionIndex)
     {
@@ -56,5 +68,6 @@ public class SettingMenu : MonoBehaviour
     public void SetFullScreen(bool isFullScreen )
     {
         Screen.fullScreenMode = isFullScreen? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
+        PlayerPrefs.SetInt("Fullscreen", isFullScreen ? 1 : 0);
     }
 }

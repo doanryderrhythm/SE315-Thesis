@@ -52,6 +52,7 @@ public class TankColorController : MonoBehaviour
         if (svControl != null)
         {
             svControl.SetPickerFromHex();
+            svControl.UpdatePickerColor();
         }
 
         UpdateOutputImage();

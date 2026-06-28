@@ -300,6 +300,7 @@ GameObject:
   - component: {fileID: 3345923212886997106}
   - component: {fileID: 4909122892154384034}
   - component: {fileID: -2972045011851803126}
+  - component: {fileID: 1334399737862503664}
   m_Layer: 5
   m_Name: MapCard
   m_TagString: Untagged
@@ -328,7 +329,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 240, y: 300}
+  m_SizeDelta: {x: 240, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6988496128249853771
 CanvasRenderer:
@@ -428,6 +429,20 @@ MonoBehaviour:
   nameText: {fileID: 5328179163452930704}
   highlight: {fileID: 7800584002154279987}
   backgroundImage: {fileID: 8942910094043792288}
+--- !u!114 &1334399737862503664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7491419220359800576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.AspectRatioFitter
+  m_AspectMode: 1
+  m_AspectRatio: 0.8
 --- !u!1 &7800584002154279987
 GameObject:
   m_ObjectHideFlags: 0

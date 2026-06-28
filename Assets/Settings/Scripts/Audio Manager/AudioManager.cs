@@ -39,7 +39,6 @@ public class AudioManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Sound.AssignButtonSound();
-        Music.PlaySceneMusic(scene.buildIndex);
     }
 
     public void SetVolume(string key, float volume)
@@ -62,92 +61,6 @@ public class AudioManager : MonoBehaviour
         yield return null;
         LoadVolume();
     }
-
-    #region UI Sound Management
-    /*
-    public void AssignButtonSound()
-    {
-        Button[] buttons = GameObject.FindObjectsByType<Button>(FindObjectsInactive.Include);
-        foreach (Button button in buttons)
-        {
-            if (button.gameObject.GetComponent<HoverSound>() == null)
-            {
-                button.gameObject.AddComponent<HoverSound>();
-            }
-            if (button.gameObject.GetComponent<ClickSound>() == null)
-            {
-                button.gameObject.AddComponent<ClickSound>();
-            }
-        }
-    }
-    public void PlayHoverSound()
-    {
-        if (hoverSound != null && sfxSource != null)
-        {
-            sfxSource.pitch = Random.Range(0.95f, 1.05f);
-            sfxSource.PlayOneShot(hoverSound);
-        }
-    }
-    public void PlayClickSound()
-    {
-        if (clickSound != null && sfxSource != null)
-        {
-            sfxSource.pitch = Random.Range(0.95f, 1.05f);
-            sfxSource.PlayOneShot(clickSound);
-        }
-    }
-    #endregion
-
-    #region Scene Music Management
-    public void SceneMusic(int sceneNumber)
-    {
-        if (sceneNumber < 0 || sceneNumber >= sceneMusic.Length)
-        {
-            Debug.LogWarning("Scene index larger than number of musics.");
-            return;
-        }
-
-        AudioClip nextMusic = sceneMusic[sceneNumber];
-
-        if (musicSource.clip == nextMusic && musicSource.isPlaying)
-        {
-            return;
-        }
-
-        if (musicFadeCoroutine != null)
-        {
-            StopCoroutine(musicFadeCoroutine);
-        }
-        
-        musicFadeCoroutine = StartCoroutine(CrossFadeMusic(nextMusic, 1f));
-    }
-
-    private IEnumerator CrossFadeMusic(AudioClip nextClip, float duration)
-    {
-        float elapsedTime = 0f;
-        float startVolume = musicSource.volume;
-        while (elapsedTime < duration)
-        {
-            musicSource.volume = Mathf.Lerp(startVolume, 0f, elapsedTime / duration);
-            elapsedTime += Time.unscaledDeltaTime;
-            yield return null;
-        }
-        musicSource.Stop();
-
-        musicSource.clip = nextClip;
-        Debug.Log(musicSource.clip.name);
-        musicSource.Play();
-        elapsedTime = 0f;
-        while (elapsedTime < duration)
-        {
-            musicSource.volume = Mathf.Lerp(0f, startVolume, elapsedTime / duration);
-            elapsedTime += Time.unscaledDeltaTime;
-            yield return null;
-        }
-        musicSource.volume = startVolume;
-        musicSource.Play();
-    }*/
-    #endregion
 }
 
 public class HoverSound : MonoBehaviour, IPointerEnterHandler
